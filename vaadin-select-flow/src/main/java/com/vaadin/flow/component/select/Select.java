@@ -1,3 +1,18 @@
+/*
+ * Copyright 2000-2017 Vaadin Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.vaadin.flow.component.select;
 
 import java.io.Serializable;
@@ -25,7 +40,6 @@ import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SingleSelect;
-import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.dom.PropertyChangeEvent;
 import com.vaadin.flow.dom.PropertyChangeListener;
 import com.vaadin.flow.function.SerializableConsumer;
@@ -35,43 +49,71 @@ import com.vaadin.flow.shared.Registration;
 /**
  * A customizable drop-down select component similar to a native browser select.
  * <p>
- * This is a server side Java integration for {@code <vaadin-select>} web component.
+ * This is a server side Java integration for {@code <vaadin-select>} web
+ * component.
  * <p>
  * For usage examples, see
- * <a href="https://vaadin.com/components/vaadin-select/java-examples">the
- * demo in vaadin.com</a>.
+ * <a href="https://vaadin.com/components/vaadin-select/java-examples">the demo
+ * in vaadin.com</a>.
  *
- * @param <T> the type of the items for the select
+ * @param <T>
+ *            the type of the items for the select
  * @author Vaadin Ltd.
  */
 @JavaScript("frontend://selectConnector.js")
-public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements HasDataProvider<T>, HasItemsAndComponents<T>, HasSize, HasValidation, SingleSelect<Select<T>, T> {
+public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
+        implements HasDataProvider<T>, HasItemsAndComponents<T>, HasSize,
+        HasValidation, SingleSelect<Select<T>, T> {
+
+    public static final String LABEL_ATTRIBUTE = "label";
+
+    private static <T> T presentationToModel(Select<T> select,
+            String presentation) {
+        if (!select.keyMapper.containsKey(presentation)) {
+            return null;
+        }
+        return select.keyMapper.get(presentation);
+    }
+
+    private static <T> String modelToPresentation(Select<T> select, T model) {
+        if (model == null) {
+            return "";
+        }
+        if (!select.keyMapper.has(model)) {
+            return null;
+        }
+        return select.keyMapper.key(model);
+    }
 
     private final KeyMapper<T> keyMapper = new KeyMapper<>();
 
     /*
-     * Internal version of list box that is just used to delegate the child components
-     * to.
+     * Internal version of list box that is just used to delegate the child
+     * components to.
      *
      * Using this internally allows all events and updates to the children
-     * (items, possible child components) to work even though the list box element
-     * is moved on the client side in the renderer method from light-dom to be a
-     * child of the select overlay.
+     * (items, possible child components) to work even though the list box
+     * element is moved on the client side in the renderer method from light-dom
+     * to be a child of the select overlay.
      *
-     * Not using the proper ListBox because all communication & updates are going
-     * through the Select. Using ListBox would just duplicate things, and cause
-     * e.g. unnecessary synchronizations and dependency to the Java integration.
+     * Not using the proper ListBox because all communication & updates are
+     * going through the Select. Using ListBox would just duplicate things, and
+     * cause e.g. unnecessary synchronizations and dependency to the Java
+     * integration.
      *
      * The known side effect is that at the element level, the child components
      * are not the correct ones, e.g. the list box is the only child of select,
      * even though that is not visible from the component level.
      */
     @Tag("vaadin-list-box")
-    private class InternalListBox<T> extends Component implements HasItemsAndComponents<T> {
+    private class InternalListBox<T> extends Component
+            implements HasItemsAndComponents<T> {
 
         @Override
         public void setItems(Collection<T> collection) {
             // NOOP, never used directly, just need to have it here
+            throw new UnsupportedOperationException(
+                    "The setItems method of the internal ListBox of the Select component should never be called.");
         }
 
         @Override
@@ -106,30 +148,12 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
 
     private VaadinItem<T> emptySelectionItem;
 
-    private static <T> T presentationToModel(
-            Select<T> select, String presentation) {
-        if (!select.keyMapper.containsKey(presentation)) {
-            return null;
-        }
-        return select.keyMapper.get(presentation);
-    }
-
-    private static <T> String modelToPresentation(
-            Select<T> select, T model) {
-        if (model == null) {
-            return "";
-        }
-        if (!select.keyMapper.has(model)) {
-            return null;
-        }
-        return select.keyMapper.key(model);
-    }
-
     /**
      * Constructs a select.
      */
     public Select() {
-        super(null, null, String.class, Select::presentationToModel, Select::modelToPresentation);
+        super(null, null, String.class, Select::presentationToModel,
+                Select::modelToPresentation);
 
         getElement().setProperty("invalid", false);
         getElement().setProperty("opened", false);
@@ -142,7 +166,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     /**
      * Constructs a select with the given items.
      *
-     * @param items the items for the select
+     * @param items
+     *            the items for the select
      */
     public Select(T... items) {
         this();
@@ -161,14 +186,15 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     }
 
     /**
-     * Sets the item renderer for this select group. The renderer is
-     * applied to each item to create a component which represents the item option in
-     * the select's drop down.
+     * Sets the item renderer for this select group. The renderer is applied to
+     * each item to create a component which represents the item option in the
+     * select's drop down.
      * <p>
-     * Default is {@code null} which means that the item's {@link #toString()} method
-     * is used and set as the text content of the vaadin item element.
+     * Default is {@code null} which means that the item's {@link #toString()}
+     * method is used and set as the text content of the vaadin item element.
      *
-     * @param renderer the item renderer, or {@code null} to clear
+     * @param renderer
+     *            the item renderer, or {@code null} to clear
      */
     public void setRenderer(
             ComponentRenderer<? extends Component, T> renderer) {
@@ -181,11 +207,13 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
      * function that converts the item to a string.
      * <p>
      * <em>NOTE:</em> even though this accepts an {@link ItemLabelGenerator},
-     * this is not the same as {@link #setItemLabelGenerator(ItemLabelGenerator)}
-     * which does a different thing.
+     * this is not the same as
+     * {@link #setItemLabelGenerator(ItemLabelGenerator)} which does a different
+     * thing.
      *
-     * @param itemLabelGenerator the function that creates the text content
-     *                           from the item, not {@code null}
+     * @param itemLabelGenerator
+     *            the function that creates the text content from the item, not
+     *            {@code null}
      */
     public void setTextRenderer(ItemLabelGenerator<T> itemLabelGenerator) {
         Objects.requireNonNull(itemLabelGenerator);
@@ -199,8 +227,9 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
      * Default is {@code false}. The empty selection item can be customized with
      * {@link #setEmptySelectionCaption(String)}.
      *
-     * @param emptySelectionAllowed {@code true} to allow not selecting anything,
-     *                              {@code false} to require selection
+     * @param emptySelectionAllowed
+     *            {@code true} to allow not selecting anything, {@code false} to
+     *            require selection
      * @see #setEmptySelectionCaption(String)
      */
     public void setEmptySelectionAllowed(boolean emptySelectionAllowed) {
@@ -218,29 +247,33 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     /**
      * Returns whether the user is allowed to select nothing.
      *
-     * @return {@code true} if empty selection is allowed, {@code false} otherwise
+     * @return {@code true} if empty selection is allowed, {@code false}
+     *         otherwise
      */
     public boolean isEmptySelectionAllowed() {
         return emptySelectionAllowed;
     }
 
     /**
-     * Sets the empty selection caption when {@link #setEmptySelectionAllowed(boolean)}
-     * has been enabled. The caption is shown for the empty selection item in the
-     * drop down.
+     * Sets the empty selection caption when
+     * {@link #setEmptySelectionAllowed(boolean)} has been enabled. The caption
+     * is shown for the empty selection item in the drop down.
      * <p>
-     * When the empty selection item is selected, the select shows the value provided
-     * by {@link #setItemLabelGenerator(ItemLabelGenerator)} for the {@code null}
-     * item, or the string set with {@link #setPlaceholder(String)} or an empty
-     * string if not placeholder is set.
+     * When the empty selection item is selected, the select shows the value
+     * provided by {@link #setItemLabelGenerator(ItemLabelGenerator)} for the
+     * {@code null} item, or the string set with {@link #setPlaceholder(String)}
+     * or an empty string if not placeholder is set.
      * <p>
-     * Default is an empty string "", which will show the place holder when selected.
+     * Default is an empty string "", which will show the place holder when
+     * selected.
      *
-     * @param emptySelectionCaption the empty selection caption to set, not {@code null}
+     * @param emptySelectionCaption
+     *            the empty selection caption to set, not {@code null}
      * @see #setEmptySelectionAllowed(boolean)
      */
     public void setEmptySelectionCaption(String emptySelectionCaption) {
-        Objects.requireNonNull(emptySelectionCaption, "Empty selection caption must not be null");
+        Objects.requireNonNull(emptySelectionCaption,
+                "Empty selection caption must not be null");
 
         this.emptySelectionCaption = emptySelectionCaption;
 
@@ -264,14 +297,15 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     }
 
     /**
-     * Sets the item enabled predicate for this select. The
-     * predicate is applied to each item to determine whether the item should be
-     * enabled ({@code true}) or disabled ({@code false}). Disabled items are
-     * displayed as grayed out and the user cannot select them.
+     * Sets the item enabled predicate for this select. The predicate is applied
+     * to each item to determine whether the item should be enabled
+     * ({@code true}) or disabled ({@code false}). Disabled items are displayed
+     * as grayed out and the user cannot select them.
      * <p>
      * By default is {@code null} and all the items are enabled.
      *
-     * @param itemEnabledProvider the item enable predicate or {@code null} to clear
+     * @param itemEnabledProvider
+     *            the item enable predicate or {@code null} to clear
      */
     public void setItemEnabledProvider(
             SerializablePredicate<T> itemEnabledProvider) {
@@ -298,9 +332,11 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
      * Default is {@code null} and the text content generated for the item with
      * {@link #setRenderer(ComponentRenderer)} is used instead.
      *
-     * @param itemLabelGenerator the item label generator to set, or {@code null} to clear
+     * @param itemLabelGenerator
+     *            the item label generator to set, or {@code null} to clear
      */
-    public void setItemLabelGenerator(ItemLabelGenerator<T> itemLabelGenerator) {
+    public void setItemLabelGenerator(
+            ItemLabelGenerator<T> itemLabelGenerator) {
         this.itemLabelGenerator = itemLabelGenerator;
         refreshItems();
     }
@@ -317,13 +353,14 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     /**
      * Sets the placeholder hint for the user.
      * <p>
-     * The placeholder will be displayed in the case that there is no item selected,
-     * or the selected item has an empty string label, or the selected item has no
-     * label and it's DOM content is empty.
+     * The placeholder will be displayed in the case that there is no item
+     * selected, or the selected item has an empty string label, or the selected
+     * item has no label and it's DOM content is empty.
      * <p>
      * Default value is {@code null}.
      *
-     * @param placeholder the placeholder to set, or {@code null} to remove
+     * @param placeholder
+     *            the placeholder to set, or {@code null} to remove
      */
     @Override
     public void setPlaceholder(String placeholder) {
@@ -333,9 +370,11 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     /**
      * Sets the string for the label element.
      * <p>
-     * <em>NOTE:</em> the label must be set for the required indicator to be visible.
+     * <em>NOTE:</em> the label must be set for the required indicator to be
+     * visible.
      *
-     * @param label string or {@code null} to clear it
+     * @param label
+     *            string or {@code null} to clear it
      */
     @Override
     public void setLabel(String label) {
@@ -356,7 +395,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
      * <p>
      * Default is {@code false}.
      *
-     * @param autofocus the autofocus to set
+     * @param autofocus
+     *            the autofocus to set
      */
     @Override
     public void setAutofocus(boolean autofocus) {
@@ -381,19 +421,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
             dataProviderListenerRegistration.remove();
         }
         dataProviderListenerRegistration = dataProvider
-                .addDataProviderListener(event -> {
-                    if (event instanceof DataChangeEvent.DataRefreshEvent) {
-                        T updatedItem = ((DataChangeEvent.DataRefreshEvent<T>) event).getItem();
-                        getItems()
-                                .filter(vaadinItem -> updatedItem.equals(vaadinItem.getItem()))
-                                .findAny()
-                                .ifPresent(this::updateItem);
-                    } else {
-                        reset();
-                    }
-                });
+                .addDataProviderListener(this::onDataChange);
     }
-
 
     /**
      * Gets the data provider.
@@ -413,14 +442,23 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     /**
      * {@inheritDoc}
      *
-     * <em>NOTE:</em> The required indicator will not be visible, if the {@link #setLabel(String)}
-     * property set for the select.
+     * <em>NOTE:</em> The required indicator will not be visible, if the
+     * {@link #setLabel(String)} property is not set for the select.
      */
     @Override
     public void setRequiredIndicatorVisible(boolean requiredIndicatorVisible) {
-        super.setRequired(requiredIndicatorVisible);
+        // this would be the same as setRequired(boolean) but we don't expose
+        // both
+        super.setRequiredIndicatorVisible(requiredIndicatorVisible);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <em>NOTE:</em> The required indicator will not be visible, if the
+     * {@link #setLabel(String)} property is not set for the select.
+     */
+    @Override
     public boolean isRequiredIndicatorVisible() {
         return super.isRequiredBoolean();
     }
@@ -428,7 +466,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     /**
      * Sets the error message to show to the user on invalid selection.
      *
-     * @param errorMessage the error message or {@code null} to clear it
+     * @param errorMessage
+     *            the error message or {@code null} to clear it
      */
     @Override
     public void setErrorMessage(String errorMessage) {
@@ -448,7 +487,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     /**
      * Sets the select to show as invalid state and display error message.
      *
-     * @param invalid {@code true} for invalid, {@code false} for valid
+     * @param invalid
+     *            {@code true} for invalid, {@code false} for valid
      */
     @Override
     public void setInvalid(boolean invalid) {
@@ -535,20 +575,25 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
 
     @Override
     public Stream<Component> getChildren() {
-        // do not provide access to items or list box as touching those will hurt
-        return Stream.concat(super.getChildren().filter(component -> component != listBox),
-                listBox.getChildren().filter(component -> !(component instanceof VaadinItem)));
+        // do not provide access to items or list box as touching those will
+        // hurt
+        return Stream.concat(
+                super.getChildren().filter(component -> component != listBox),
+                listBox.getChildren().filter(
+                        component -> !(component instanceof VaadinItem)));
     }
 
     /**
      * Removes the given child components from this component.
      * <p>
-     * <em>NOTE:</em> any component with the {@code slot} attribute will
-     * be attempted to removed from the light dom of the vaadin-select, instead
-     * of inside the options drop down.
+     * <em>NOTE:</em> any component with the {@code slot} attribute will be
+     * attempted to removed from the light dom of the vaadin-select, instead of
+     * inside the options drop down.
      *
-     * @param components the components to remove
-     * @throws IllegalArgumentException if any of the components is not a child of this component
+     * @param components
+     *            the components to remove
+     * @throws IllegalArgumentException
+     *             if any of the components is not a child of this component
      */
     @Override
     public void remove(Component... components) {
@@ -563,19 +608,21 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     }
 
     /**
-     * Removes all child components that are not items.
-     * To remove all items, reset the data provider or use {@link #setItems(Object[])}.
+     * Removes all child components that are not items. To remove all items,
+     * reset the data provider or use {@link #setItems(Object[])}.
      * <p>
-     * <em>NOTE:</em> this will remove all non-items from the drop down and any slotted
-     * components from vaadin-select's light dom.
+     * <em>NOTE:</em> this will remove all non-items from the drop down and any
+     * slotted components from vaadin-select's light dom.
      *
      * @see HasComponents#removeAll()
      */
     @Override
     public void removeAll() {
-        // Only remove list box children that are not vaadin-item since it makes no sense
+        // Only remove list box children that are not vaadin-item since it makes
+        // no sense
         // to allow removing those, causing the component to be in flux state.
-        // Also do not remove the list box but remove any slotted components (see add())
+        // Also do not remove the list box but remove any slotted components
+        // (see add())
         getChildren().forEach(this::remove);
     }
 
@@ -583,7 +630,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
     protected boolean hasValidValue() {
         // this is not about whether the value is actually "valid",
         // this is about whether or not is something that should be committed to
-        // the _value_ of this field. E.g, it might be a value that is acceptable,
+        // the _value_ of this field. E.g, it might be a value that is
+        // acceptable,
         // but the component status should still be _invalid_.
         String selectedKey = getElement().getProperty("value");
         T item = keyMapper.get(selectedKey);
@@ -633,16 +681,18 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
         }
 
         if (getItemLabelGenerator() != null) {
-            vaadinItem.getElement().setAttribute("label", getItemLabelGenerator().apply(item));
+            vaadinItem.getElement().setAttribute(LABEL_ATTRIBUTE,
+                    getItemLabelGenerator().apply(item));
         } else if (item == emptySelectionItem) {
-            vaadinItem.getElement().setAttribute("label", "");
+            vaadinItem.getElement().setAttribute(LABEL_ATTRIBUTE, "");
         } else {
-            vaadinItem.getElement().removeAttribute("label");
+            vaadinItem.getElement().removeAttribute(LABEL_ATTRIBUTE);
         }
         updateItemEnabled(vaadinItem);
 
         // currently the updates for the selected item are not reflected to the
-        // input field automatically https://github.com/vaadin/vaadin-select/issues/180
+        // input field automatically
+        // https://github.com/vaadin/vaadin-select/issues/180
         if (item == getValue() && !resetPending) {
             getElement().executeJavaScript("this._updateValueSlot()");
         }
@@ -665,7 +715,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
 
     @SuppressWarnings("unchecked")
     private Stream<VaadinItem<T>> getItems() {
-        return listBox.getChildren().filter(component -> component instanceof VaadinItem)
+        return listBox.getChildren()
+                .filter(component -> component instanceof VaadinItem)
                 .map(child -> (VaadinItem<T>) child);
     }
 
@@ -689,8 +740,22 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
                 .forEach(this::add);
     }
 
+    private void onDataChange(DataChangeEvent<T> event) {
+        if (event instanceof DataChangeEvent.DataRefreshEvent) {
+            T updatedItem = ((DataChangeEvent.DataRefreshEvent<T>) event)
+                    .getItem();
+            Object updatedItemId = getDataProvider().getId(updatedItem);
+            getItems()
+                    .filter(vaadinItem -> updatedItem.equals(
+                            getDataProvider().getId(vaadinItem.getItem())))
+                    .findAny().ifPresent(this::updateItem);
+        } else {
+            reset();
+        }
+    }
+
     private T getValue(Serializable key) {
-        if (key == null || key.equals("")) {
+        if (key == null || "".equals(key)) {
             return null;
         }
         return keyMapper.get(key.toString());
@@ -730,7 +795,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements Ha
             }
             // Now make sure that the item is still in the correct state
             Optional<VaadinItem<T>> selectedItem = getItems().filter(
-                    button -> button.getItem() == getValue(event.getValue()))
+                    item -> item.getItem() == getValue(event.getValue()))
                     .findFirst();
 
             selectedItem.ifPresent(this::updateItemEnabled);

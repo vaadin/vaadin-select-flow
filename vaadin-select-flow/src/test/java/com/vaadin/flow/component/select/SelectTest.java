@@ -26,7 +26,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testDefaults() {
+    public void defaults() {
         Assert.assertNull("Default value should be null", select.getValue());
         Assert.assertNull("Empty value should be null", select.getEmptyValue());
 
@@ -51,7 +51,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testBasicProperties() {
+    public void basicProperties() {
         select.setPlaceholder("placeholder");
         select.setLabel("label");
         select.setInvalid(true);
@@ -72,7 +72,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testDefaultValue_clearSetsToNull() {
+    public void defaultValue_clearSetsToNull() {
         select.setItems("foo", "bar");
         select.setValue("foo");
 
@@ -83,7 +83,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testSetItems_createsItems() {
+    public void setItems_createsItems() {
         Assert.assertEquals("Invalid number of items", 0, getListBox().getChildren().count());
 
         select = new Select<>("foo", "bar", "baz");
@@ -105,7 +105,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testItemEnabledProvider_updatedEnabledState() {
+    public void itemEnabledProvider_updatedEnabledState() {
         select.setItems("1", "2", "3");
         select.setItemEnabledProvider(item -> item.contains("1"));
 
@@ -129,7 +129,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testItemLabelGenerator_updatesLabelProperty() {
+    public void itemLabelGenerator_updatesLabelProperty() {
         select.setItems("1", "2", "3");
         select.setItemLabelGenerator(item -> item + " LABEL");
 
@@ -149,7 +149,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testRenderer_defaultRendererUsesToString() {
+    public void renderer_defaultRendererUsesToString() {
         Select<Bean> select = new Select<>();
         select.setItems(new Bean("foo"), new Bean("bar"), new Bean("baz"));
         selectSupplier = () -> select;
@@ -160,7 +160,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testRenderer_setRendererShorthandForString() {
+    public void renderer_setRendererShorthandForString() {
         Select<Bean> select = new Select<>();
         select.setItems(new Bean("foo"), new Bean("bar"), new Bean("baz"));
         selectSupplier = () -> select;
@@ -172,7 +172,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testRenderer_customRendererUsed() {
+    public void renderer_customRendererUsed() {
         select.setItems("foo", "bar", "baz");
         select.setRenderer(new ComponentRenderer<>((SerializableFunction<String, Span>) Span::new));
 
@@ -186,7 +186,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testEmptySelectionAllowed_emptySelectionCaptionChanged() {
+    public void emptySelectionAllowed_emptySelectionCaptionChanged() {
         select.setItems("foo", "bar");
 
         validateItem(0, "foo", null, true);
@@ -224,7 +224,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testEmptySelectionItem_itemEnabledProviderCanDisableIt() {
+    public void emptySelectionItem_itemEnabledProviderCanDisableIt() {
         select.setItems("foo", "bar");
         select.setEmptySelectionAllowed(true);
         select.setItemEnabledProvider(Objects::nonNull);
@@ -235,7 +235,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testEmptySelectionItem_itemLabelGeneratorCanCustomizeIt() {
+    public void emptySelectionItem_itemLabelGeneratorCanCustomizeIt() {
         select.setItems("foo", "bar");
         select.setEmptySelectionAllowed(true);
         select.setItemLabelGenerator(string -> string == null ? "FOOBAR" : string + "!");
@@ -246,7 +246,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testValueProperty_convertsToPresentationAndModel() {
+    public void valueProperty_convertsToPresentationAndModel() {
         Select<Bean> select = new Select<>();
         Bean foo = new Bean("foo");
         Bean bar = new Bean("bar");
@@ -281,7 +281,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testSetDisabledItemAsValue_valueChangeRejected() {
+    public void setDisabledItemAsValue_valueChangeRejected() {
         select.setItems("foo", "bar");
         select.setItemEnabledProvider(item -> item.equals("foo"));
 
@@ -308,7 +308,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testDisable_makesElementAndItemsDisabled() {
+    public void disable_makesElementAndItemsDisabled() {
         select.setItems("foo", "bar");
         select.setEnabled(false);
 
@@ -331,7 +331,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testClientSideValueUpdate_componentIsReadOnly_preventsValueUpdate() {
+    public void clientSideValueUpdate_componentIsReadOnly_preventsValueUpdate() {
         // need to allow updating value via internal method to mock client update
         final Consumer<String>[] clientSideValueUpdater = new Consumer[1];
         select = new Select<String>() {
@@ -374,7 +374,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testAddRemoveComponents_componentsIntendedForListBox() {
+    public void addRemoveComponents_componentsIntendedForListBox() {
         select.setItems("foo", "bar");
 
         Assert.assertEquals("Invalid number of items", 2, getListBox().getChildren().count());
@@ -428,7 +428,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testAddComponentAfterBeforeItem_goesIntoCorrectPlace() {
+    public void addComponentAfterBeforeItem_goesIntoCorrectPlace() {
         select.setItems("foo", "bar");
         select.addComponents("foo", new Span("after foo"));
         select.prependComponents("foo", new Span("before foo"));
@@ -451,7 +451,7 @@ public class SelectTest {
     }
 
     @Test
-    public void testAddToPrefix_prefixComponentsGoToSelectChildren() {
+    public void addToPrefix_prefixComponentsGoToSelectChildren() {
         select.setItems("foo", "bar");
 
         select.addToPrefix(new Span("prefix1"));

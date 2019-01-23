@@ -1,5 +1,6 @@
 package com.vaadin.flow.component.select.examples;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +8,6 @@ import java.util.Objects;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.html.Input;
 import com.vaadin.flow.component.html.NativeButton;
@@ -25,6 +25,8 @@ public class TestView extends Div implements HasUrlParameter<String> {
     public static final String SELECT_FIRST_ITEM = "Select first item";
     public static final String SELECT_THIRD_ITEM = "Select third item";
     public static final String SELECT_LAST_ITEM = "Select last item";
+    public static final String ITEMS_PARAM = "items=";
+    public static final String SELECT_PARAM = "select=";
     private int valueChangeCounter = 0;
     private int itemCounter = 0;
 
@@ -38,7 +40,8 @@ public class TestView extends Div implements HasUrlParameter<String> {
     private Checkbox readOnly;
     private Checkbox visible;
 
-    private ComponentRenderer<Div, Item> componentRenderer = new ComponentRenderer<>(this::createItemComponent);
+    private ComponentRenderer<Div, Item> componentRenderer = new ComponentRenderer<>(
+            this::createItemComponent);
 
     public TestView() {
         select = new Select<>();
@@ -55,23 +58,26 @@ public class TestView extends Div implements HasUrlParameter<String> {
         Div root = new Div();
 
         Span span = new Span(item.text);
-        NativeButton updateButton = new NativeButton("Update-" + item.index, event -> {
-            item.text = item.text + "-UPDATED";
-            select.getDataProvider().refreshItem(item);
-        });
-        NativeButton removeButton = new NativeButton("Remove button " + item.index);
-        removeButton.addClickListener(event -> {
-            root.remove(removeButton);
-        });
+        NativeButton updateButton = new NativeButton("Update-" + item.index,
+                event -> {
+                    item.text = item.text + "-UPDATED";
+                    select.getDataProvider().refreshItem(item);
+                });
+        NativeButton removeButton = new NativeButton(
+                "Remove button " + item.index);
+        removeButton.addClickListener(event -> root.remove(removeButton));
         root.add(span, updateButton, removeButton);
         return root;
     }
 
     private void createOptions() {
         Div options = new Div();
-        options.add(new NativeButton(SELECT_FIRST_ITEM, event -> select.setValue(items.get(0))));
-        options.add(new NativeButton(SELECT_THIRD_ITEM, event -> select.setValue(items.get(2))));
-        options.add(new NativeButton(SELECT_LAST_ITEM, event -> select.setValue(items.get(items.size() - 1))));
+        options.add(new NativeButton(SELECT_FIRST_ITEM,
+                event -> select.setValue(items.get(0))));
+        options.add(new NativeButton(SELECT_THIRD_ITEM,
+                event -> select.setValue(items.get(2))));
+        options.add(new NativeButton(SELECT_LAST_ITEM,
+                event -> select.setValue(items.get(items.size() - 1))));
 
         options.add(new Div());
 
@@ -85,19 +91,25 @@ public class TestView extends Div implements HasUrlParameter<String> {
 
         options.add(new Div());
 
-        options.add(new NativeButton("Refresh item 0", event -> refreshItem(0)));
-        options.add(new NativeButton("Refresh item 2", event -> refreshItem(2)));
-        options.add(new NativeButton("Refresh item 10", event -> refreshItem(10)));
+        options.add(
+                new NativeButton("Refresh item 0", event -> refreshItem(0)));
+        options.add(
+                new NativeButton("Refresh item 2", event -> refreshItem(2)));
+        options.add(
+                new NativeButton("Refresh item 10", event -> refreshItem(10)));
         options.add(new NativeButton("Refresh All", event -> refreshAll()));
 
         options.add(new Div());
 
-        options.add(new Checkbox("ItemLabelGenerator", event -> setItemLabelGenerator(event.getValue())));
-        options.add(new Checkbox("ItemEnabledProvider", event -> setItemEnabledProvider(event.getValue())));
+        options.add(new Checkbox("ItemLabelGenerator",
+                event -> setItemLabelGenerator(event.getValue())));
+        options.add(new Checkbox("ItemEnabledProvider",
+                event -> setItemEnabledProvider(event.getValue())));
 
         options.add(new Div());
 
-        Checkbox emptySelectionEnabled = new Checkbox("emptySelectionEnabled", event -> setEmptySelectionAllowed(event.getValue()));
+        Checkbox emptySelectionEnabled = new Checkbox("emptySelectionEnabled",
+                event -> setEmptySelectionAllowed(event.getValue()));
         emptySelectionEnabled.setValue(select.isEmptySelectionAllowed());
         emptySelectionEnabled.setId("emptySelectionEnabled");
         options.add(emptySelectionEnabled);
@@ -105,42 +117,45 @@ public class TestView extends Div implements HasUrlParameter<String> {
         Input emptySelectionCaption = new Input();
         emptySelectionCaption.setId("emptySelectionCaption");
         emptySelectionCaption.setValue(select.getEmptySelectionCaption());
-        emptySelectionCaption.addValueChangeListener(event -> setEmptySelectionCaption(event.getValue()));
+        emptySelectionCaption.addValueChangeListener(
+                event -> setEmptySelectionCaption(event.getValue()));
         options.add(new Span("EmptySelectionCaption:"), emptySelectionCaption);
 
         options.add(new Div());
 
         options.add(new NativeButton("focus()", event -> select.focus()));
 
-        Checkbox requiredIndicatorVisible = new Checkbox("RequiredIndicator", event -> select.setRequiredIndicatorVisible(event.getValue()));
+        Checkbox requiredIndicatorVisible = new Checkbox("RequiredIndicator",
+                event -> select.setRequiredIndicatorVisible(event.getValue()));
         requiredIndicatorVisible.setValue(select.isRequiredIndicatorVisible());
         requiredIndicatorVisible.setId("requiredIndicatorVisible");
         options.add(requiredIndicatorVisible);
 
         Input errorMessage = new Input();
         errorMessage.setId("errorMessage");
-        errorMessage.addValueChangeListener(event -> select.setErrorMessage(event.getValue()));
+        errorMessage.addValueChangeListener(
+                event -> select.setErrorMessage(event.getValue()));
         options.add(new Span("errorMessage"), errorMessage);
 
         Input placeholder = new Input();
         placeholder.setId("placeholder");
-        placeholder.addValueChangeListener(event -> select.setPlaceholder(event.getValue()));
+        placeholder.addValueChangeListener(
+                event -> select.setPlaceholder(event.getValue()));
         options.add(new Span("placeholder"), placeholder);
 
         options.add(new Div());
 
-        options.add(
-                new NativeButton("Set renderer", event -> {
-                    if (select.getItemRenderer() == null) {
-                        select.setRenderer(componentRenderer);
-                    } else {
-                        select.setRenderer(null);
-                    }
-                }),
-                new NativeButton("Add HR 0", event -> addHrInBeginning()),
+        options.add(new NativeButton("Set renderer", event -> {
+            if (select.getItemRenderer() == null) {
+                select.setRenderer(componentRenderer);
+            } else {
+                select.setRenderer(null);
+            }
+        }), new NativeButton("Add HR 0", event -> addHrInBeginning()),
                 new NativeButton("Remove HR 0", event -> removeHrInBeginning()),
                 new NativeButton("Add HR 2", event -> addHrAfterIndexTwo()),
-                new NativeButton("Remove HR 2", event -> removeHrAfterIndexTwo()),
+                new NativeButton("Remove HR 2",
+                        event -> removeHrAfterIndexTwo()),
                 new NativeButton("Add HR LAST", event -> addHrLast()),
                 new NativeButton("Remove HR LAST", event -> removeHrLast()));
 
@@ -148,15 +163,18 @@ public class TestView extends Div implements HasUrlParameter<String> {
 
         enabled = new Checkbox("Enabled");
         enabled.setValue(select.isEnabled());
-        enabled.addValueChangeListener(event -> select.setEnabled(event.getValue()));
+        enabled.addValueChangeListener(
+                event -> select.setEnabled(event.getValue()));
 
         readOnly = new Checkbox("ReadOnly");
         readOnly.setValue(select.isReadOnly());
-        readOnly.addValueChangeListener(event -> select.setReadOnly(event.getValue()));
+        readOnly.addValueChangeListener(
+                event -> select.setReadOnly(event.getValue()));
 
         visible = new Checkbox("Visible");
         visible.setValue(select.isVisible());
-        visible.addValueChangeListener(event -> select.setVisible(event.getValue()));
+        visible.addValueChangeListener(
+                event -> select.setVisible(event.getValue()));
 
         options.add(enabled, readOnly, visible);
 
@@ -224,18 +242,22 @@ public class TestView extends Div implements HasUrlParameter<String> {
     }
 
     @Override
-    public void setParameter(BeforeEvent beforeEvent, @OptionalParameter String parameter) {
+    public void setParameter(BeforeEvent beforeEvent,
+            @OptionalParameter String parameter) {
         if (parameter == null) {
             return;
         }
 
-        if (parameter.contains("items=")) {
-            int fromIndex = parameter.indexOf("items=");
-            setItems(Integer.parseInt(parameter.substring(fromIndex, parameter.indexOf("&", fromIndex)).replace("items=", "")));
+        if (parameter.contains(ITEMS_PARAM)) {
+            int fromIndex = parameter.indexOf(ITEMS_PARAM);
+            setItems(Integer.parseInt(parameter
+                    .substring(fromIndex, parameter.indexOf('&', fromIndex))
+                    .replace(ITEMS_PARAM, "")));
         } else if (parameter.contains("setEmptySelectionAllowed")) {
             setEmptySelectionAllowed(true);
         } else if (parameter.contains("emptySelectionCaption=")) {
-            setEmptySelectionCaption(parameter.replace("emptySelectionCaption=", ""));
+            setEmptySelectionCaption(
+                    parameter.replace("emptySelectionCaption=", ""));
         } else if (parameter.contains("autofocus")) {
             select.setAutofocus(true);
         }
@@ -267,9 +289,11 @@ public class TestView extends Div implements HasUrlParameter<String> {
             select.setRenderer(componentRenderer);
         }
 
-        if (parameter.contains("select=")) {
-            int fromIndex = parameter.indexOf("select=");
-            int index = Integer.parseInt(parameter.substring(fromIndex, parameter.indexOf("&", fromIndex)).replace("select=", ""));
+        if (parameter.contains(SELECT_PARAM)) {
+            int fromIndex = parameter.indexOf(SELECT_PARAM);
+            int index = Integer.parseInt(parameter
+                    .substring(fromIndex, parameter.indexOf('&', fromIndex))
+                    .replace(SELECT_PARAM, ""));
             select.setValue(items.get(index));
         }
 
@@ -312,7 +336,7 @@ public class TestView extends Div implements HasUrlParameter<String> {
         select.setItems(items);
     }
 
-    private class Item {
+    private class Item implements Serializable {
 
         private final int index;
         private String text;
@@ -333,11 +357,12 @@ public class TestView extends Div implements HasUrlParameter<String> {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
             Item item = (Item) o;
-            return index == item.index &&
-                    Objects.equals(text, item.text);
+            return index == item.index && Objects.equals(text, item.text);
         }
 
         @Override
@@ -346,12 +371,18 @@ public class TestView extends Div implements HasUrlParameter<String> {
         }
     }
 
-    public static String createEventString(HasValue.ValueChangeEvent<Item> event, int valueChangeCounter) {
-        return createEventString(event.getValue() == null ? "null" : event.getValue().text, event.getOldValue() == null ? "null" : event.getOldValue().text, event.isFromClient(), valueChangeCounter);
+    public static String createEventString(
+            HasValue.ValueChangeEvent<Item> event, int valueChangeCounter) {
+        return createEventString(
+                event.getValue() == null ? "null" : event.getValue().text,
+                event.getOldValue() == null ? "null" : event.getOldValue().text,
+                event.isFromClient(), valueChangeCounter);
     }
 
-    public static String createEventString(String value, String oldValue, boolean isFromClient, int valueChangeCounter) {
-        return "VALUE:" + value + "|OLD:" + oldValue + "|CLIENT:" + isFromClient + "|INDEX:" + valueChangeCounter;
+    public static String createEventString(String value, String oldValue,
+            boolean isFromClient, int valueChangeCounter) {
+        return "VALUE:" + value + "|OLD:" + oldValue + "|CLIENT:" + isFromClient
+                + "|INDEX:" + valueChangeCounter;
     }
 
 }
