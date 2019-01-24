@@ -1,5 +1,7 @@
 package com.vaadin.flow.component.select;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.function.SerializableFunction;
@@ -102,6 +105,38 @@ public class SelectTest {
         validateItem(1, "2", null, true);
         validateItem(2, "3", null, true);
         validateItem(3, "4", null, true);
+    }
+
+    @Test
+    public void setDataProvider_dataProviderRefreshes_itemsUpdated() {
+        Select<Bean> select = new Select<>();
+        Bean beanToUpdate = new Bean("foo");
+        List<Bean> beans = Arrays.asList(beanToUpdate, new Bean("bar"), new Bean("baz"));
+        selectSupplier = () -> select;
+
+        ListDataProvider<Bean> dataProvider = new ListDataProvider<Bean>(beans) {
+            @Override
+            public Object getId(Bean item) {
+                return item.id;
+            }
+        };
+
+        select.setDataProvider(dataProvider);
+
+        Assert.assertEquals("Invalid number of items", 3, getListBox().getChildren().count());
+
+        validateItem(0, "foo!", null, true);
+        validateItem(1, "bar!", null, true);
+        validateItem(2, "baz!", null, true);
+
+        beanToUpdate.setProperty("UPDATED");
+        dataProvider.refreshItem(beanToUpdate);
+
+        Assert.assertEquals("Invalid number of items", 3, getListBox().getChildren().count());
+
+        validateItem(0, "UPDATED!", null, true);
+        validateItem(1, "bar!", null, true);
+        validateItem(2, "baz!", null, true);
     }
 
     @Test
@@ -500,14 +535,20 @@ public class SelectTest {
     }
 
     private static class Bean {
-        private final String property;
+        private String property;
+        private final String id;
 
         private Bean(String property) {
             this.property = property;
+            this.id = property;
         }
 
         public String getProperty() {
             return property;
+        }
+
+        public void setProperty(String property) {
+            this.property = property;
         }
 
         @Override

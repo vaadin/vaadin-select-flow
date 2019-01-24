@@ -746,7 +746,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
                     .getItem();
             Object updatedItemId = getDataProvider().getId(updatedItem);
             getItems()
-                    .filter(vaadinItem -> updatedItem.equals(
+                    .filter(vaadinItem -> updatedItemId.equals(
                             getDataProvider().getId(vaadinItem.getItem())))
                     .findAny().ifPresent(this::updateItem);
         } else {
