@@ -3,6 +3,7 @@ package com.vaadin.flow.component.select;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
@@ -73,7 +74,7 @@ public class SelectView extends DemoView {
         requiredSelect.setPlaceholder("Select an option");
         requiredSelect.setEmptySelectionCaption("Select an option");
         requiredSelect.setEmptySelectionAllowed(true);
-        requiredSelect.setItemEnabledProvider(item -> item != null);
+        requiredSelect.setItemEnabledProvider(Objects::nonNull);
 
         // add a divider after the empty selection item
         requiredSelect.addComponents(null, new Hr());
@@ -98,7 +99,7 @@ public class SelectView extends DemoView {
         select.setPlaceholder("Language");
         select.setTextRenderer(Locale::getDisplayLanguage);
         select.setItemLabelGenerator(locale -> {
-            if (locale.getLanguage().equalsIgnoreCase("Other")) {
+            if ("Other".equalsIgnoreCase(locale.getLanguage())) {
                 // Empty label string will show the placeholder
                 return "";
             } else {
