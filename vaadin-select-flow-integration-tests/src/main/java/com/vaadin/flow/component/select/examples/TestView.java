@@ -248,16 +248,14 @@ public class TestView extends Div implements HasUrlParameter<String> {
             return;
         }
 
+        parameter = parameter.toLowerCase();
         if (parameter.contains(ITEMS_PARAM)) {
-            int fromIndex = parameter.indexOf(ITEMS_PARAM);
-            setItems(Integer.parseInt(parameter
-                    .substring(fromIndex, parameter.indexOf('&', fromIndex))
-                    .replace(ITEMS_PARAM, "")));
-        } else if (parameter.contains("setEmptySelectionAllowed")) {
+            setItems(parseIntParam(ITEMS_PARAM, parameter));
+        } else if (parameter.contains("emptyselectioncaption")) {
             setEmptySelectionAllowed(true);
-        } else if (parameter.contains("emptySelectionCaption=")) {
+        } else if (parameter.contains("emptyselectioncaption=")) {
             setEmptySelectionCaption(
-                    parameter.replace("emptySelectionCaption=", ""));
+                    parameter.replace("emptyselectioncaption=", ""));
         } else if (parameter.contains("autofocus")) {
             select.setAutofocus(true);
         }
@@ -277,11 +275,11 @@ public class TestView extends Div implements HasUrlParameter<String> {
             visible.setValue(false);
         }
 
-        if (parameter.contains("itemLabelGenerator")) {
+        if (parameter.contains("itemlabelgenerator")) {
             setItemLabelGenerator(true);
         }
 
-        if (parameter.contains("itemEnabledProvider")) {
+        if (parameter.contains("itemenabledprovider")) {
             setItemEnabledProvider(true);
         }
 
@@ -290,11 +288,7 @@ public class TestView extends Div implements HasUrlParameter<String> {
         }
 
         if (parameter.contains(SELECT_PARAM)) {
-            int fromIndex = parameter.indexOf(SELECT_PARAM);
-            int index = Integer.parseInt(parameter
-                    .substring(fromIndex, parameter.indexOf('&', fromIndex))
-                    .replace(SELECT_PARAM, ""));
-            select.setValue(items.get(index));
+            select.setValue(items.get(parseIntParam(SELECT_PARAM, parameter)));
         }
 
         if (parameter.contains("hr0")) {
@@ -303,7 +297,7 @@ public class TestView extends Div implements HasUrlParameter<String> {
         if (parameter.contains("hr2")) {
             addHrAfterIndexTwo();
         }
-        if (parameter.contains("hrLast")) {
+        if (parameter.contains("hrlast")) {
             addHrLast();
         }
 
@@ -315,6 +309,20 @@ public class TestView extends Div implements HasUrlParameter<String> {
             message.setId("VCE-" + valueId);
             valueChangeContainer.addComponentAsFirst(message);
         });
+    }
+
+    private static int parseIntParam(String parameterName, String parameter) {
+        int fromIndex = parameter.indexOf(parameterName);
+        if (parameter.substring(fromIndex).contains("&")) {
+            int endIndex = parameter.substring(fromIndex).contains("&")
+                    ? parameter.indexOf('&', fromIndex)
+                    : parameter.length();
+            return Integer.parseInt(parameter.substring(fromIndex, endIndex)
+                    .replace(parameterName, ""));
+        } else {
+            return Integer.parseInt(parameter.substring(fromIndex)
+                    .replace(parameterName, ""));
+        }
     }
 
     private void refreshItem(int index) {

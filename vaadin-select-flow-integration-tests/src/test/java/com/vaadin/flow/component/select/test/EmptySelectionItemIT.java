@@ -3,9 +3,11 @@ package com.vaadin.flow.component.select.test;
 import java.util.List;
 
 import com.vaadin.flow.component.select.testbench.SelectElement;
+import com.vaadin.flow.testutil.TestPath;
 import org.junit.Assert;
 import org.junit.Test;
 
+@TestPath("")
 public class EmptySelectionItemIT extends AbstractSelectIT {
 
     @Test

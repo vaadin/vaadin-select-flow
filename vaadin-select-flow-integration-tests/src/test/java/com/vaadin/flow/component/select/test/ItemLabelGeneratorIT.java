@@ -1,7 +1,9 @@
 package com.vaadin.flow.component.select.test;
 
+import com.vaadin.flow.testutil.TestPath;
 import org.junit.Test;
 
+@TestPath("")
 public class ItemLabelGeneratorIT extends AbstractSelectIT {
 
     @Test
@@ -22,7 +24,7 @@ public class ItemLabelGeneratorIT extends AbstractSelectIT {
 
     @Test
     public void testItemLabelGenerator_initialItemLabelGenerator_setsItemLabels() {
-        openWithExtraParameter("itemLabelGenerator", true);
+        openWithExtraParameter("itemLabelGenerator");
         verifyItems("-LABEL");
     }
 

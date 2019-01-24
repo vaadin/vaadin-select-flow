@@ -1,10 +1,12 @@
 package com.vaadin.flow.component.select.test;
 
+import com.vaadin.flow.testutil.TestPath;
 import org.junit.Test;
 
 /**
  * Tests for selecting items.
  */
+@TestPath("")
 public class SelectionIT extends AbstractSelectIT {
 
     @Test
@@ -34,11 +36,11 @@ public class SelectionIT extends AbstractSelectIT {
 
     @Test
     public void testSelection_initialSelection_valueSelected() {
-        openWithExtraParameter("select=0&", true);
+        openWithExtraParameter("select=0");
 
         verify.selectedItem("Item-0");
 
-        openWithExtraParameter("select=3&", true);
+        openWithExtraParameter("select=3");
 
         verify.selectedItem("Item-3");
 
@@ -46,7 +48,7 @@ public class SelectionIT extends AbstractSelectIT {
 
     @Test
     public void testSelection_initialSelection_userCanChangeValue() {
-        openWithExtraParameter("select=0&", true);
+        openWithExtraParameter("select=0");
 
         selectElement.selectItemByIndex(2);
         verify.valueChangeEvent("Item-2", "Item-0", true, 0);
@@ -55,7 +57,7 @@ public class SelectionIT extends AbstractSelectIT {
 
     @Test
     public void testSelection_initialSelection_serverCanChangeValue() {
-        openWithExtraParameter("select=0&", true);
+        openWithExtraParameter("select=0");
 
         page.clickSelectThirdItem();
         verify.valueChangeEvent("Item-2", "Item-0", false, 0);

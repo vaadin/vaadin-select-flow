@@ -1,9 +1,11 @@
 package com.vaadin.flow.component.select.test;
 
+import com.vaadin.flow.testutil.TestPath;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+@TestPath("")
 public class BasicFeaturesIT extends AbstractSelectIT {
 
     @Test
@@ -29,7 +31,7 @@ public class BasicFeaturesIT extends AbstractSelectIT {
 
     @Test
     public void testEnabled_initiallyDisabled_userCannotSelect() {
-        openWithExtraParameter("disabled", true);
+        openWithExtraParameter("disabled");
         verify.selectDisabled();
 
         selectElement.setProperty("disabled", false);
@@ -47,7 +49,7 @@ public class BasicFeaturesIT extends AbstractSelectIT {
 
     @Test
     public void testReadOnly_initiallyReadOnly_userCannotSelect() {
-        openWithExtraParameter("readonly", true);
+        openWithExtraParameter("readonly");
 
         verify.selectReadOnly();
 
@@ -80,7 +82,7 @@ public class BasicFeaturesIT extends AbstractSelectIT {
 
     @Test
     public void testVisibility_initiallyInvisible_noSelect() {
-        openWithExtraParameter("invisible", true);
+        openWithExtraParameter("invisible");
 
         Assert.assertEquals("No select should be found from page when invisible",0, findElements(By.tagName("select")).size());
 

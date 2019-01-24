@@ -3,9 +3,11 @@ package com.vaadin.flow.component.select.test;
 import java.util.List;
 
 import com.vaadin.flow.component.select.testbench.SelectElement;
+import com.vaadin.flow.testutil.TestPath;
 import org.junit.Assert;
 import org.junit.Test;
 
+@TestPath("")
 public class ItemEnabledGeneratorIT extends AbstractSelectIT {
 
     @Test
@@ -19,7 +21,7 @@ public class ItemEnabledGeneratorIT extends AbstractSelectIT {
 
     @Test
     public void testItemEnabledProvider_initiallySetOddItemsDisabled_itemHasDisabledAttribute() {
-        openWithExtraParameter("itemEnabledProvider", true);
+        openWithExtraParameter("itemEnabledProvider");
         verify.itemEnabled(itemIndex -> itemIndex % 2 == 0);
     }
 

@@ -89,7 +89,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
 
     /*
      * Internal version of list box that is just used to delegate the child
-     * components to.
+     * components to. vaadin-select.html imports vaadin-list-box.html.
      *
      * Using this internally allows all events and updates to the children
      * (items, possible child components) to work even though the list box

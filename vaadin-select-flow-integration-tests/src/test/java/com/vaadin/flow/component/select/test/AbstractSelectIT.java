@@ -1,5 +1,6 @@
 package com.vaadin.flow.component.select.test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntSupplier;
 
@@ -7,6 +8,7 @@ import com.vaadin.flow.component.checkbox.testbench.CheckboxElement;
 import com.vaadin.flow.component.select.examples.TestView;
 import com.vaadin.flow.component.select.testbench.SelectElement;
 import com.vaadin.flow.function.SerializablePredicate;
+import com.vaadin.flow.testutil.AbstractComponentIT;
 import com.vaadin.testbench.TestBenchElement;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,7 +17,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public abstract class AbstractSelectIT extends AbstractParallelTest {
+public abstract class AbstractSelectIT extends AbstractComponentIT {
 
     protected SelectElement selectElement;
 
@@ -35,11 +37,9 @@ public abstract class AbstractSelectIT extends AbstractParallelTest {
 
         private TestBenchElement getButtonWithText(String text) {
             return $("button").all().stream()
-                            .filter(element -> element.getText()
-                                    .equalsIgnoreCase(text))
-                            .findFirst()
-                            .orElseThrow(() -> new NoSuchElementException(
-                                    "Cannot find button"));
+                    .filter(element -> element.getText().equalsIgnoreCase(text))
+                    .findFirst().orElseThrow(() -> new NoSuchElementException(
+                            "Cannot find button"));
         }
 
         private CheckboxElement getCheckboxWithText(String textContent) {
@@ -225,30 +225,36 @@ public abstract class AbstractSelectIT extends AbstractParallelTest {
     protected final Page page = new Page();
     protected final Verify verify = new Verify();
 
-    protected void openWithExtraParameter(String parameter,
-            boolean includeDefault) {
-        getDriver().get(getBaseURL() + "/"
-                + (includeDefault
-                        ? getDefaultParameter().append("&").append(parameter)
-                                .toString()
-                        : ""));
-        selectElement = $(SelectElement.class).waitForFirst();
+    protected void openWithExtraParameter(String parameter) {
+        open(getDefaultParameter(), parameter);
     }
 
-    protected StringBuilder getDefaultParameter() {
+    @Override
+    protected String getTestURL(String... parameters) {
+        // replacing the query parameter as normal flow route parameter
+        return super.getTestURL(parameters).replace("?", "");
+    }
+
+    protected String getDefaultParameter() {
         int initialNumberOfItems = getInitialNumberOfItems();
         if (initialNumberOfItems < 1) {
-            return new StringBuilder();
+            return null;
         } else {
-            return new StringBuilder("items=" + initialNumberOfItems);
+            return "items=" + initialNumberOfItems;
         }
     }
 
-    protected abstract int getInitialNumberOfItems();
+    @Override
+    protected void open(String... parameters) {
+        super.open(parameters);
+        selectElement = $(SelectElement.class).waitForFirst();
+    }
 
     @Before
     public void init() {
-        openWithExtraParameter("", true);
+        open(getDefaultParameter());
     }
+
+    protected abstract int getInitialNumberOfItems();
 
 }

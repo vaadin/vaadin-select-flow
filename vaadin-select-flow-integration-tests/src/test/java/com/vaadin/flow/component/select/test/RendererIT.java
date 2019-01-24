@@ -3,12 +3,14 @@ package com.vaadin.flow.component.select.test;
 import java.util.List;
 
 import com.vaadin.flow.component.select.testbench.SelectElement;
+import com.vaadin.flow.testutil.TestPath;
 import com.vaadin.testbench.TestBenchElement;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+@TestPath("")
 public class RendererIT extends AbstractSelectIT {
 
     @Test
@@ -61,7 +63,7 @@ public class RendererIT extends AbstractSelectIT {
 
     @Test
     public void testRenderer_initialComponentRendererSet_rendersComponentsThatWork() {
-        openWithExtraParameter("renderer", true);
+        openWithExtraParameter("renderer");
 
         runRendererTestPattern();
     }

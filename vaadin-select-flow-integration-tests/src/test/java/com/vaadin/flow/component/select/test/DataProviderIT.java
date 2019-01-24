@@ -3,9 +3,11 @@ package com.vaadin.flow.component.select.test;
 import java.util.List;
 
 import com.vaadin.flow.component.select.testbench.SelectElement;
+import com.vaadin.flow.testutil.TestPath;
 import org.junit.Assert;
 import org.junit.Test;
 
+@TestPath("")
 public class DataProviderIT extends AbstractSelectIT {
     @Override
     protected int getInitialNumberOfItems() {
@@ -49,7 +51,7 @@ public class DataProviderIT extends AbstractSelectIT {
 
     @Test
     public void testDataProvider_emptyDataProvider_noItems() {
-        openWithExtraParameter("", false);
+        open();
 
         // FIXME trying to open an empty select will throw inside the web component
         // List<SelectElement.ItemElement> items = selectElement.getItems();
