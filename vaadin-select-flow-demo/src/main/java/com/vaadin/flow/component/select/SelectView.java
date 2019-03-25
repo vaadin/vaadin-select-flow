@@ -22,6 +22,8 @@ import com.vaadin.flow.router.Route;
 @Route("vaadin-select")
 public class SelectView extends DemoView {
 
+    public enum TimeFrame { SECONDS, MINUTES; }
+    
     @Override
     protected void initView() {
         basicDemo();
@@ -30,8 +32,9 @@ public class SelectView extends DemoView {
         formFieldDemo();
         customOptionsDemo();
         customIconDemo();
+        itemLabelGeneratorVsRendererDemo();
     }
-
+    
     private void basicDemo() {
         // begin-source-example
         // source-example-heading: Basic Demo
@@ -188,6 +191,20 @@ public class SelectView extends DemoView {
         // end-source-example
 
         addCard("Customizing", "Custom Icon", select);
+    }
+    
+    private void itemLabelGeneratorVsRendererDemo() {
+        // begin-source-example
+        // source-example-heading: The Renderer overrides the item label generator
+        Select<TimeFrame> slTimeUnit = new Select<>();
+        slTimeUnit.setLabel("Timeframes");
+        slTimeUnit.setItems(TimeFrame.values());
+        slTimeUnit.setItemLabelGenerator(e -> "select generator: " + e.name());
+        slTimeUnit.setTextRenderer(e -> "renderer: " + e.name());
+        // end-source-example
+        slTimeUnit.setWidth("300px");
+        
+        addCard("The Renderer overrides the item label generator", slTimeUnit);
     }
 
     private static class Employee {

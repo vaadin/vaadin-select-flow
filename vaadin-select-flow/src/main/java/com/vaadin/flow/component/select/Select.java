@@ -190,8 +190,10 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
      * each item to create a component which represents the item option in the
      * select's drop down.
      * <p>
-     * Default is {@code null} which means that the item's {@link #toString()}
-     * method is used and set as the text content of the vaadin item element.
+     * Default is {@code null}. If an item label generator is set, the generator
+     * is used to create the item's. If no item label generator or renderer
+     * is set, the item's {@link #toString()} method is used and set as the text
+     * content of the vaadin item element.
      *
      * @param renderer
      *            the item renderer, or {@code null} to clear
@@ -206,10 +208,10 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
      * Convenience setter for creating a {@link TextRenderer} from the given
      * function that converts the item to a string.
      * <p>
-     * <em>NOTE:</em> even though this accepts an {@link ItemLabelGenerator},
-     * this is not the same as
-     * {@link #setItemLabelGenerator(ItemLabelGenerator)} which does a different
-     * thing.
+     * If a item label generator is set, the generator is used to create the
+     * item's. If no item label generator or renderer is set, the item's
+     * {@link #toString()} method is used and set as the text content of the
+     * vaadin item element.
      *
      * @param itemLabelGenerator
      *            the function that creates the text content from the item, not
@@ -329,8 +331,10 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
      * Sets the item label generator. It generates the text that is shown in the
      * input part for the item when it has been selected.
      * <p>
-     * Default is {@code null} and the text content generated for the item with
-     * {@link #setRenderer(ComponentRenderer)} is used instead.
+     * The item label generator is also used to generate the text that is shown
+     * in the item list, if no renderer is set. If a renderer is set, the
+     * renderer generates the item list. If no item label generator or render is
+     * set, the item's {@link #toString()} method is used.
      *
      * @param itemLabelGenerator
      *            the item label generator to set, or {@code null} to clear
@@ -674,10 +678,12 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
 
         if (vaadinItem == emptySelectionItem) {
             vaadinItem.setText(emptySelectionCaption);
-        } else if (getItemRenderer() == null) {
-            vaadinItem.setText(item.toString());
-        } else {
+        } else if (getItemRenderer() != null) {
             vaadinItem.add(getItemRenderer().createComponent(item));
+        }else if(getItemLabelGenerator() != null) {
+            vaadinItem.setText(itemLabelGenerator.apply(item));
+        } else {
+            vaadinItem.setText(item.toString());
         }
 
         if (getItemLabelGenerator() != null) {
