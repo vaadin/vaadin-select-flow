@@ -6,6 +6,11 @@ public class Team {
     private String name;
     private int departmentId;
 
+    public Team(int id, String name, int departmentId) {
+        this.id = id;
+        this.name = name;
+        this.departmentId = departmentId;
+    }
 
     public int getId() {
         return id;
@@ -28,12 +33,6 @@ public class Team {
     }
 
     public void setDepartmentId(int departmentId) {
-        this.departmentId = departmentId;
-    }
-
-    public Team(int id, String name, int departmentId) {
-        this.id = id;
-        this.name = name;
         this.departmentId = departmentId;
     }
 }

@@ -7,10 +7,9 @@ import java.util.List;
 
 public class TeamData {
 
-    private final List<Team> TEAM_LIST = new ArrayList<>();
+    private final static List<Team> TEAM_LIST = new ArrayList<>();
 
     {
-//        departmentList = new Department[]{new Department(1, "PD", new Team[] {new Team("Flow"), new Team("Components"), new Team("Pro tools")}), new Department(2, new Team("Services"), new Team[]{new Team("Experts"), new Team("Incubator")})}
         TEAM_LIST.add(new Team(1, "Flow", 1));
         TEAM_LIST.add(new Team(2, "Components", 1));
         TEAM_LIST.add(new Team(3, "Pro tools", 1));

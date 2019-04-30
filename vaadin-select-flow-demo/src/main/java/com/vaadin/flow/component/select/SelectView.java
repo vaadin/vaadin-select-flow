@@ -1,7 +1,6 @@
 package com.vaadin.flow.component.select;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Hr;
@@ -56,8 +55,6 @@ public class SelectView extends DemoView {
         verticalLayout.setAlignItems(FlexComponent.Alignment.START);
         addCard("Basic usage", verticalLayout);
     }
-
-    private Department department = new Department();
 
     private List<Department> getDepartments() {
 

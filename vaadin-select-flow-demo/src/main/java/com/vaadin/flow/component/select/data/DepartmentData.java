@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DepartmentData {
 
-    public final List<Department> DEPARTMENT_LIST = new ArrayList<>();
+    private final static List<Department> DEPARTMENT_LIST = new ArrayList<>();
 
     {
         DEPARTMENT_LIST.add(new Department(1, "Product"));
