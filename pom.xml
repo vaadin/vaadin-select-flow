@@ -51,29 +51,4 @@
 		</profile>
 	</profiles>
 
-	<repositories>
-		<repository>
-			<id>vaadin-prereleases</id>
-			<url>http://maven.vaadin.com/vaadin-prereleases</url>
-		</repository>
-		<repository>
-			<id>vaadin-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>vaadin-prereleases</id>
-			<url>http://maven.vaadin.com/vaadin-prereleases</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>vaadin-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
 </project>
