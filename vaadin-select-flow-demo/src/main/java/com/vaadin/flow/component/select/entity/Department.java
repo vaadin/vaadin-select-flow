@@ -26,12 +26,6 @@ public class Department {
         this.name = name;
     }
 
-
     public Department() {
     }
-
-//    @Override
-//    public String toString() {
-//        return name;
-//    }
 }
