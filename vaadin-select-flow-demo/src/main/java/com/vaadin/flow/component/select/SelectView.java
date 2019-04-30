@@ -1,15 +1,10 @@
 package com.vaadin.flow.component.select;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Hr;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -26,27 +21,28 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
 
+import java.util.List;
+import java.util.Objects;
+
 @Route("vaadin-select")
 public class SelectView extends DemoView {
 
     @Override
     protected void initView() {
-        basicDemo();//Basic Usage
+        basicDemo();//Basic usage
         entityListDemo();
         disabledItemDemo();
-        customizeLabelDemo();
-        configurationDisabledAndReadonlyDemo();//Form Field
+        configurationDisabledAndReadonlyDemo();//Validation
         configurationForReqiredDemo();
         formFieldDemo();
-        separatorDemo(); //Presentation
+        separatorDemo();//Presentation
         customOptionsDemo();
-        customIconDemo(); //Customizing
-        styling(); //Styling
+        styling();//Styling
     }
 
     private void basicDemo() {
         // begin-source-example
-        // source-example-heading: Basic Usage
+        // source-example-heading: Basic usage
         Select<String> select = new Select<>();
         select.setLabel("Name");
         select.setItems("Jose", "Manolo", "Pedro");
@@ -58,7 +54,7 @@ public class SelectView extends DemoView {
         // end-source-example
         VerticalLayout verticalLayout = new VerticalLayout(select, value);
         verticalLayout.setAlignItems(FlexComponent.Alignment.START);
-        addCard("Basic Usage", verticalLayout);
+        addCard("Basic usage", verticalLayout);
     }
 
     private Department department = new Department();
@@ -78,7 +74,7 @@ public class SelectView extends DemoView {
 
     private void entityListDemo() {
         // begin-source-example
-        // source-example-heading: Entity List
+        // source-example-heading: Entity list
         Select<Department> select = new Select<>();
         select.setLabel("Department");
         List<Department> departmentList = getDepartments();
@@ -87,54 +83,31 @@ public class SelectView extends DemoView {
         select.setItemLabelGenerator(Department::getName);
         select.setItems(departmentList);
         // end-source-example
-        addCard("Entity List", select);
+        addCard("Entity list", select);
 
     }
 
     private void disabledItemDemo(){
         // begin-source-example
-        // source-example-heading: Disabled Item
+        // source-example-heading: Disabled item
         Select<Team> select = new Select<>();
         select.setLabel("Team");
         List<Team> teamList = getTeams();
-        select.setItemLabelGenerator(Team::getName);
+
+        //Convenience setter for creating a TextRenderer from the given function
+        //that converts the item to a string.
+        select.setTextRenderer(Team::getName);
         select.setItems(teamList);
         select.setItemEnabledProvider(item ->
                 !"Developers Journey and Onboarding".equals(item.getName()));
 
         // end-source-example
-        addCard("Disabled Item", select);
-    }
-
-    private void customizeLabelDemo() {
-        // begin-source-example
-        // source-example-heading: Customize the Label of Selected Value
-        List<Locale> locales = Arrays.asList(new Locale("Other"),
-                new Locale("es"),
-                new Locale("fi"),
-                new Locale("en"));
-
-        Select<Locale> select = new Select<>();
-        select.setLabel("Language");
-        select.setPlaceholder("Language");
-        select.setTextRenderer(Locale::getDisplayLanguage);
-        select.setItemLabelGenerator(locale -> {
-            if ("Other".equalsIgnoreCase(locale.getLanguage())) {
-                // Empty label string will show the placeholder
-                return "";
-            } else {
-                return locale.getISO3Language();
-            }
-        });
-        select.setItems(locales);
-        // end-source-example
-
-        addCard("Customize the Label of Selected Value", select);
+        addCard("Disabled item", select);
     }
 
     private void configurationDisabledAndReadonlyDemo() {
         // begin-source-example
-        // source-example-heading: Disabled and Readonly
+        // source-example-heading: Disabled and Read-only
         Select<String> disabledSelect = new Select<>("Option one", "Option two");
         disabledSelect.setEnabled(false);
         disabledSelect.setLabel("Disabled");
@@ -146,7 +119,7 @@ public class SelectView extends DemoView {
         // end-source-example
         HorizontalLayout layout = new HorizontalLayout(disabledSelect, readOnlySelect);
         layout.getStyle().set("flex-wrap", "wrap");
-        addCard("Form field", "Disabled and Readonly", layout);
+        addCard("Disabled and Read-only", layout);
     }
 
     private void configurationForReqiredDemo() {
@@ -163,20 +136,19 @@ public class SelectView extends DemoView {
         requiredSelect.setPlaceholder("Select an option");
         requiredSelect.setEmptySelectionCaption("Select an option");
         requiredSelect.setEmptySelectionAllowed(true);
-        requiredSelect.setItemEnabledProvider(Objects::nonNull);
 
         // add a divider after the empty selection item
         requiredSelect.addComponents(null, new Hr());
         // end-source-example
         FlexLayout layout = new FlexLayout(requiredSelect);
         layout.getStyle().set("flex-wrap", "wrap");
-        addCard("Form field", "Required", layout);
+        addCard("Validation", "Required", layout);
     }
 
 
     private void formFieldDemo() {
         // begin-source-example
-        // source-example-heading: Using with binder
+        // source-example-heading: Using with Binder
         Employee employee = new Employee();
         Binder<Employee> binder = new Binder<>();
 
@@ -206,7 +178,7 @@ public class SelectView extends DemoView {
         // end-source-example
         HorizontalLayout layout = new HorizontalLayout(titleSelect, button);
         layout.setAlignItems(FlexComponent.Alignment.BASELINE);
-        addCard("Form field", "Using with binder", layout);
+        addCard("Validation", "Using with Binder", layout);
     }
 
     private void separatorDemo(){
@@ -237,11 +209,10 @@ public class SelectView extends DemoView {
 
         select.setRenderer(new ComponentRenderer<>(emotion -> {
             Div text = new Div();
-            text.getStyle().set("text-align", "right");
             text.setText(emotion.getText());
 
             FlexLayout wrapper = new FlexLayout();
-            wrapper.setFlexGrow(1, text);
+            text.getStyle().set("margin-left","0.5em");
             wrapper.add(emotion.getIcon().create(), text);
             return wrapper;
         }));
@@ -251,21 +222,6 @@ public class SelectView extends DemoView {
         // end-source-example
 
         addCard("Presentation", "Customizing drop down options", select);
-    }
-
-    private void customIconDemo() {
-        // begin-source-example
-        // source-example-heading: Custom Icon
-        Select<String> select = new Select<>();
-        select.setItems("Jose", "Manolo", "Pedro");
-
-        Div iconWrapper = new Div();
-        iconWrapper.add(VaadinIcon.USER.create());
-
-        select.addToPrefix(iconWrapper);
-        // end-source-example
-
-        addCard("Customizing", "Custom Icon", select);
     }
 
     private void styling() {
@@ -281,10 +237,10 @@ public class SelectView extends DemoView {
         HorizontalLayout firstHorizontalLayout = new HorizontalLayout(firstDiv,firstAnchor);
         HorizontalLayout secondHorizontalLayout = new HorizontalLayout(secondDiv,secondAnchor);
         // begin-source-example
-        // source-example-heading: Styling
+        // source-example-heading: Styling references
 
         // end-source-example
-        addCard("Styling", "Styling",firstHorizontalLayout,secondHorizontalLayout);
+        addCard("Styling", "Styling references",firstHorizontalLayout,secondHorizontalLayout);
     }
 
     private static class Employee {
