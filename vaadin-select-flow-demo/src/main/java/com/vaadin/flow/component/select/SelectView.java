@@ -84,19 +84,20 @@ public class SelectView extends DemoView {
 
     }
 
-    private void disabledItemDemo(){
+    private void disabledItemDemo() {
         // begin-source-example
         // source-example-heading: Disabled item
         Select<Team> select = new Select<>();
         select.setLabel("Team");
         List<Team> teamList = getTeams();
 
-        // Convenience setter for creating a TextRenderer from the given function
-        // that converts the item to a string.
+        // Convenience setter for creating a TextRenderer from the given
+        // function that converts the item to a string.
         select.setTextRenderer(Team::getName);
         select.setItems(teamList);
-        select.setItemEnabledProvider(item ->
-                !"Developers Journey and Onboarding".equals(item.getName()));
+        select.setItemEnabledProvider(
+                item -> !"Developers Journey and Onboarding"
+                        .equals(item.getName()));
 
         // end-source-example
         addCard("Disabled item", select);
@@ -105,16 +106,19 @@ public class SelectView extends DemoView {
     private void configurationDisabledAndReadonlyDemo() {
         // begin-source-example
         // source-example-heading: Disabled and Read-only
-        Select<String> disabledSelect = new Select<>("Option one", "Option two");
+        Select<String> disabledSelect = new Select<>("Option one",
+                "Option two");
         disabledSelect.setEnabled(false);
         disabledSelect.setLabel("Disabled");
 
-        Select<String> readOnlySelect = new Select<>("Option one", "Option two");
+        Select<String> readOnlySelect = new Select<>("Option one",
+                "Option two");
         readOnlySelect.setReadOnly(true);
         readOnlySelect.setValue("Option one");
         readOnlySelect.setLabel("Read-only");
         // end-source-example
-        HorizontalLayout layout = new HorizontalLayout(disabledSelect, readOnlySelect);
+        HorizontalLayout layout = new HorizontalLayout(disabledSelect,
+                readOnlySelect);
         layout.getStyle().set("flex-wrap", "wrap");
         addCard("Disabled and Read-only", layout);
     }
@@ -151,16 +155,17 @@ public class SelectView extends DemoView {
 
         Select<String> titleSelect = new Select<>();
         titleSelect.setLabel("Title");
-        titleSelect.setItems("Account Manager", "Designer", "Marketing Manager"
-                , "Developer");
+        titleSelect.setItems("Account Manager", "Designer", "Marketing Manager",
+                "Developer");
 
         titleSelect.setEmptySelectionAllowed(true);
         titleSelect.setEmptySelectionCaption("Select you title");
         titleSelect.addComponents(null, new Hr());
 
         binder.forField(titleSelect)
-                .asRequired("Please choose the option closest to your profession")
-                 .bind(Employee::getTitle, Employee::setTitle);
+                .asRequired(
+                        "Please choose the option closest to your profession")
+                .bind(Employee::getTitle, Employee::setTitle);
 
         // Note that another option of handling the unselected item (null) is:
         // binding.withNullRepresentation("Select your title")
@@ -168,8 +173,8 @@ public class SelectView extends DemoView {
 
         Button button = new Button("Submit", event -> {
             if (binder.writeBeanIfValid(employee)) {
-                Notification.show("Submit successful",
-                        2000, Notification.Position.MIDDLE);
+                Notification.show("Submit successful", 2000,
+                        Notification.Position.MIDDLE);
             }
         });
         // end-source-example
@@ -209,13 +214,14 @@ public class SelectView extends DemoView {
             text.setText(emotion.getText());
 
             FlexLayout wrapper = new FlexLayout();
-            text.getStyle().set("margin-left","0.5em");
+            text.getStyle().set("margin-left", "0.5em");
             wrapper.add(emotion.getIcon().create(), text);
             return wrapper;
         }));
 
         // Note that if the setItemLabelGenerator(...) is applied, the label
-        // string is shown in the input field instead of the components (icon + text)
+        // string is shown in the input field instead of the components (icon +
+        // text)
         // end-source-example
 
         addCard("Presentation", "Customizing drop down options", select);
@@ -223,21 +229,29 @@ public class SelectView extends DemoView {
 
     private void styling() {
 
-        Div firstDiv= new Div();
-        firstDiv.setText("To read about styling you can read the related tutorial in");
-        Anchor firstAnchor = new Anchor("https://vaadin.com/docs/v13/flow/theme/using-component-themes.html","Using Component Themes");
+        Div firstDiv = new Div();
+        firstDiv.setText(
+                "To read about styling you can read the related tutorial in");
+        Anchor firstAnchor = new Anchor(
+                "https://vaadin.com/docs/v13/flow/theme/using-component-themes.html",
+                "Using Component Themes");
 
-        Div secondDiv= new Div();
+        Div secondDiv = new Div();
         secondDiv.setText("To know about styling in html you can read the ");
-        Anchor secondAnchor= new Anchor("https://vaadin.com/components/vaadin-select/html-examples/select-styling-demos","HTML Styling Demos");
+        Anchor secondAnchor = new Anchor(
+                "https://vaadin.com/components/vaadin-select/html-examples/select-styling-demos",
+                "HTML Styling Demos");
 
-        HorizontalLayout firstHorizontalLayout = new HorizontalLayout(firstDiv,firstAnchor);
-        HorizontalLayout secondHorizontalLayout = new HorizontalLayout(secondDiv,secondAnchor);
+        HorizontalLayout firstHorizontalLayout = new HorizontalLayout(firstDiv,
+                firstAnchor);
+        HorizontalLayout secondHorizontalLayout = new HorizontalLayout(
+                secondDiv, secondAnchor);
         // begin-source-example
         // source-example-heading: Styling references
 
         // end-source-example
-        addCard("Styling", "Styling references",firstHorizontalLayout,secondHorizontalLayout);
+        addCard("Styling", "Styling references", firstHorizontalLayout,
+                secondHorizontalLayout);
     }
 
     private static class Employee {
