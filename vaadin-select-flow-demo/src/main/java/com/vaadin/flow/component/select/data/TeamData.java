@@ -7,9 +7,10 @@ import java.util.List;
 
 public class TeamData {
 
-    private final static List<Team> TEAM_LIST = new ArrayList<>();
+    private static List<Team> TEAM_LIST;
 
     {
+        TEAM_LIST = new ArrayList<>();
         TEAM_LIST.add(new Team(1, "Flow", 1));
         TEAM_LIST.add(new Team(2, "Components", 1));
         TEAM_LIST.add(new Team(3, "Pro tools", 1));

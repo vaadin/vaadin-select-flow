@@ -24,8 +24,8 @@
                 <filtering>false</filtering>
             </resource>
             <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
+                <directory>src/main/webapp</directory>
+                <filtering>true</filtering>
             </resource>
         </resources>
 

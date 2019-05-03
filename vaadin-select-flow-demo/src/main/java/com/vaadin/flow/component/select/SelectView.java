@@ -76,7 +76,7 @@ public class SelectView extends DemoView {
         select.setLabel("Department");
         List<Department> departmentList = getDepartments();
 
-        //Choose which property from Department is the presentation value
+        // Choose which property from Department is the presentation value
         select.setItemLabelGenerator(Department::getName);
         select.setItems(departmentList);
         // end-source-example
@@ -91,8 +91,8 @@ public class SelectView extends DemoView {
         select.setLabel("Team");
         List<Team> teamList = getTeams();
 
-        //Convenience setter for creating a TextRenderer from the given function
-        //that converts the item to a string.
+        // Convenience setter for creating a TextRenderer from the given function
+        // that converts the item to a string.
         select.setTextRenderer(Team::getName);
         select.setItems(teamList);
         select.setItemEnabledProvider(item ->
@@ -178,7 +178,7 @@ public class SelectView extends DemoView {
         addCard("Validation", "Using with Binder", layout);
     }
 
-    private void separatorDemo(){
+    private void separatorDemo() {
         // begin-source-example
         // source-example-heading: Separators
         Select<Weekday> select = new Select<>();
@@ -187,8 +187,8 @@ public class SelectView extends DemoView {
         select.setItemEnabledProvider(Objects::nonNull);
         select.setEmptySelectionAllowed(true);
         select.setItems(Weekday.values());
-        select.addComponents(null ,new Hr());
-        select.addComponents(Weekday.Friday,new Hr());
+        select.addComponents(null, new Hr());
+        select.addComponents(Weekday.FRIDAY, new Hr());
         // end-source-example
         addCard("Presentation", "Separators", select);
     }

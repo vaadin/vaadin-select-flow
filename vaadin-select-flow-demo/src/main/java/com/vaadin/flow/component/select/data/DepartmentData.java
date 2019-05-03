@@ -7,9 +7,10 @@ import java.util.List;
 
 public class DepartmentData {
 
-    private final static List<Department> DEPARTMENT_LIST = new ArrayList<>();
+    private static List<Department> DEPARTMENT_LIST;
 
     {
+        DEPARTMENT_LIST = new ArrayList<>();
         DEPARTMENT_LIST.add(new Department(1, "Product"));
         DEPARTMENT_LIST.add(new Department(2, "Service"));
         DEPARTMENT_LIST.add(new Department(1, "HR"));
