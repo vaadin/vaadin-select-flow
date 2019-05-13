@@ -7,14 +7,18 @@ import java.util.List;
 
 public class DepartmentData {
 
-    private static List<Department> DEPARTMENT_LIST;
+    private final static List<Department> DEPARTMENT_LIST = createDepartmentList();
 
-    {
-        DEPARTMENT_LIST = new ArrayList<>();
-        DEPARTMENT_LIST.add(new Department(1, "Product"));
-        DEPARTMENT_LIST.add(new Department(2, "Service"));
-        DEPARTMENT_LIST.add(new Department(1, "HR"));
-        DEPARTMENT_LIST.add(new Department(1, "Accounting"));
+    private static List<Department> createDepartmentList() {
+        List<Department> departmentList = new ArrayList<>();
+
+        departmentList = new ArrayList<>();
+        departmentList.add(new Department(1, "Product"));
+        departmentList.add(new Department(2, "Service"));
+        departmentList.add(new Department(1, "HR"));
+        departmentList.add(new Department(1, "Accounting"));
+
+        return departmentList;
     }
 
     public List<Department> getDepartments() {

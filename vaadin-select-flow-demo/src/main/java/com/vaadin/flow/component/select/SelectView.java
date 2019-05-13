@@ -28,15 +28,15 @@ public class SelectView extends DemoView {
 
     @Override
     protected void initView() {
-        basicDemo();//Basic usage
+        basicDemo();// Basic usage
         entityListDemo();
         disabledItemDemo();
-        configurationDisabledAndReadonlyDemo();//Validation
+        configurationDisabledAndReadonlyDemo();// Validation
         configurationForReqiredDemo();
         formFieldDemo();
-        separatorDemo();//Presentation
+        separatorDemo();// Presentation
         customOptionsDemo();
-        styling();//Styling
+        styling();// Styling
     }
 
     private void basicDemo() {
@@ -48,8 +48,8 @@ public class SelectView extends DemoView {
 
         Div value = new Div();
         value.setText("Select a value");
-        select.addValueChangeListener(event ->
-                value.setText("Selected: " + event.getValue()));
+        select.addValueChangeListener(
+                event -> value.setText("Selected: " + event.getValue()));
         // end-source-example
         VerticalLayout verticalLayout = new VerticalLayout(select, value);
         verticalLayout.setAlignItems(FlexComponent.Alignment.START);
@@ -145,7 +145,6 @@ public class SelectView extends DemoView {
         layout.getStyle().set("flex-wrap", "wrap");
         addCard("Validation", "Required", layout);
     }
-
 
     private void formFieldDemo() {
         // begin-source-example
