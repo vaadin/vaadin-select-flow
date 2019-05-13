@@ -59,14 +59,12 @@ public class SelectView extends DemoView {
     private List<Department> getDepartments() {
 
         DepartmentData departmentData = new DepartmentData();
-        List<Department> departmentList = departmentData.getDepartments();
-        return departmentList;
+        return departmentData.getDepartments();
     }
 
     private List<Team> getTeams() {
         TeamData teamData = new TeamData();
-        List<Team> teamList = teamData.getTeams();
-        return teamList;
+        return teamData.getTeams();
     }
 
     private void entityListDemo() {
@@ -81,7 +79,6 @@ public class SelectView extends DemoView {
         select.setItems(departmentList);
         // end-source-example
         addCard("Entity list", select);
-
     }
 
     private void disabledItemDemo() {
@@ -106,13 +103,13 @@ public class SelectView extends DemoView {
     private void configurationDisabledAndReadonlyDemo() {
         // begin-source-example
         // source-example-heading: Disabled and Read-only
-        Select<String> disabledSelect = new Select<>("Option one",
-                "Option two");
+        Select<String> disabledSelect = new Select<>("Option one", //NOSONAR
+                "Option two"); //NOSONAR
         disabledSelect.setEnabled(false);
         disabledSelect.setLabel("Disabled");
 
-        Select<String> readOnlySelect = new Select<>("Option one",
-                "Option two");
+        Select<String> readOnlySelect = new Select<>("Option one", //NOSONAR
+                "Option two"); //NOSONAR
         readOnlySelect.setReadOnly(true);
         readOnlySelect.setValue("Option one");
         readOnlySelect.setLabel("Read-only");
@@ -130,7 +127,7 @@ public class SelectView extends DemoView {
         requiredSelect.setRequiredIndicatorVisible(true);
         requiredSelect.setLabel("Required");
 
-        requiredSelect.setItems("Option one", "Option two", "Option three");
+        requiredSelect.setItems("Option one", "Option two", "Option three"); //NOSONAR
 
         // The empty selection item is the first item that maps to an null item.
         // As the item is not selectable, using it also as placeholder
