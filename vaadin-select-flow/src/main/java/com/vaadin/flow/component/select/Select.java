@@ -30,6 +30,7 @@ import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JavaScript;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.select.generated.GeneratedVaadinSelect;
 import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.binder.HasItemsAndComponents;
@@ -60,6 +61,7 @@ import com.vaadin.flow.shared.Registration;
  *            the type of the items for the select
  * @author Vaadin Ltd.
  */
+@JsModule("./selectConnector.js")
 @JavaScript("frontend://selectConnector.js")
 public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
         implements HasDataProvider<T>, HasItemsAndComponents<T>, HasSize,
