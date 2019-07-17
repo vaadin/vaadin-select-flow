@@ -59,16 +59,15 @@ public class SelectView extends DemoView {
         valueSelect.setValue("Value");
 
         // end-source-example
-        labelSelect.setId("select-label-id");
-        placeholderSelect.setId("select-");
-        valueSelect.setId("select-value-id");
-        div.add(labelSelect, new Text(" "), placeholderSelect, new Text(" "), valueSelect);
+        labelSelect.getStyle().set("margin-right","5px");
+        placeholderSelect.getStyle().set("margin-right","5px");
+        div.add(labelSelect, placeholderSelect, valueSelect);
         addCard("Basic usage", div);
     }
 
     private void disabledAndReadonly() {
         // begin-source-example
-        // source-example-heading: Disabled and Read-only
+        // source-example-heading: Disabled and read-only
         Select<String> disabledSelect = new Select<>("Value");
         disabledSelect.setEnabled(false);
         disabledSelect.setValue("Value");
@@ -79,10 +78,11 @@ public class SelectView extends DemoView {
         readOnlySelect.setValue("Value");
         readOnlySelect.setLabel("Read-only");
         // end-source-example
+        disabledSelect.getStyle().set("margin-right","5px");
         HorizontalLayout layout = new HorizontalLayout(disabledSelect,
                 readOnlySelect);
         layout.getStyle().set("flex-wrap", "wrap");
-        addCard("Disabled and Read-only", layout);
+        addCard("Disabled and read-only", layout);
     }
 
     private List<Department> getDepartments() {
@@ -112,7 +112,7 @@ public class SelectView extends DemoView {
 
     private void valueChanged() {
         // begin-source-example
-        // source-example-heading: Value changed
+        // source-example-heading: Value change event
         Select<String> select = new Select<>();
         select.setLabel("Name");
         select.setItems("Option one", "Option two");
@@ -124,7 +124,7 @@ public class SelectView extends DemoView {
         // end-source-example
         VerticalLayout verticalLayout = new VerticalLayout(select, value);
         verticalLayout.setAlignItems(FlexComponent.Alignment.START);
-        addCard("Value changed", verticalLayout);
+        addCard("Value change event", verticalLayout);
     }
 
     private void disabledItem() {
