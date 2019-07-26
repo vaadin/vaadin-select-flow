@@ -1,13 +1,29 @@
+// Error handling functions
+const tryCatchWrapper = function(originalFunction) {
+    return function() {
+        try {
+            originalFunction.apply(this, arguments);
+        } catch (error) {
+            logError(error.message);
+        }
+    }
+}
+
+function logError(message) {
+    console.error("There seems to be an error in the Select:\n" + message + "\n" +
+       "Please submit an issue to https://github.com/vaadin/vaadin-select-flow/issues/new!");
+}
+
 window.Vaadin.Flow.selectConnector = {
-initLazy: function (select) {
-    const _findListBoxElement = function() {
+initLazy: tryCatchWrapper(function (select) {
+    const _findListBoxElement = tryCatchWrapper(function() {
         for (let i = 0; i < select.childElementCount; i++) {
             const child = select.children[i];
             if ("VAADIN-LIST-BOX" === child.tagName.toUpperCase()) {
-                return child;
+                return childSmth;
             }
         }
-    };
+    });
 
       // do not init this connector twice for the given select
       if (select.$connector) {
@@ -16,7 +32,7 @@ initLazy: function (select) {
 
       select.$connector = {};
 
-      select.renderer = function(root) {
+      select.renderer = tryCatchWrapper(function(root) {
           const listBox = _findListBoxElement();
           if (listBox) {
               if (root.firstChild) {
@@ -24,6 +40,6 @@ initLazy: function (select) {
               }
               root.appendChild(listBox);
           }
-      };
-  }
+      });
+  })
 };
