@@ -2,7 +2,8 @@
 const tryCatchWrapper = function(originalFunction) {
     return function() {
         try {
-            originalFunction.apply(this, arguments);
+            const result = originalFunction.apply(this, arguments);
+            return result;
         } catch (error) {
             logError(error.message);
         }
@@ -20,7 +21,7 @@ initLazy: tryCatchWrapper(function (select) {
         for (let i = 0; i < select.childElementCount; i++) {
             const child = select.children[i];
             if ("VAADIN-LIST-BOX" === child.tagName.toUpperCase()) {
-                return childSmth;
+                return child;
             }
         }
     });
