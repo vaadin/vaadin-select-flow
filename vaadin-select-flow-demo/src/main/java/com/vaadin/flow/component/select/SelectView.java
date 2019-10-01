@@ -281,7 +281,7 @@ public class SelectView extends DemoView {
         // source-example-heading: Small size
         Select<String> select = new Select<>("Label");
         select.setItems("Option one", "Option two");
-        select.setPlaceholder("Option one");
+        select.setPlaceholder("Placeholder");
         select.getElement().setAttribute("theme", "small");
         // end-source-example
         addCard("Theme Variants", "Small size", select);
