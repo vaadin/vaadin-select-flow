@@ -696,7 +696,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
         // input field automatically
         // https://github.com/vaadin/vaadin-select/issues/180
         if (item == getValue() && !resetPending) {
-            getElement().executeJavaScript("this._updateValueSlot()");
+            getElement()
+                    .executeJavaScript("this.$connector._updateValueSlot()");
         }
     }
 

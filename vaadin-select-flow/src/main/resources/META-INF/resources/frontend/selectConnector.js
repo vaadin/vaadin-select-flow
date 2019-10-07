@@ -15,6 +15,15 @@ initLazy: function (select) {
       }
 
       select.$connector = {};
+      
+      select.$connector._updateValueSlot = function(){
+          if (select._items){
+              select._updateValueSlot();
+          }
+          else {
+              setTimeout(select.$connector._updateValueSlot);
+          }
+      }
 
       select.renderer = function(root) {
           const listBox = _findListBoxElement();
