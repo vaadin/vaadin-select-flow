@@ -13,18 +13,18 @@ public class DetachIT extends AbstractComponentIT {
     /**
      * https://github.com/vaadin/vaadin-select-flow/issues/43
      *
-     * Test that setting a renderer after detach won't cause
-     * an exception on the client side.
+     * Test that setting a renderer after detach won't cause an exception on the
+     * client side.
      *
      */
     @Test
     public void testReattach_setRenderer() {
-    	open(getTestURL());
-    	getCommandExecutor().waitForVaadin();
-    	$("button").first().click();
-    	getCommandExecutor().waitForVaadin();
-    	$("button").first().click();
-    	getCommandExecutor().waitForVaadin();
+        open(getTestURL());
+        getCommandExecutor().waitForVaadin();
+        $("button").first().click();
+        getCommandExecutor().waitForVaadin();
+        $("button").first().click();
+        getCommandExecutor().waitForVaadin();
         assertFalse($("div.v-system-error").exists());
     }
 
