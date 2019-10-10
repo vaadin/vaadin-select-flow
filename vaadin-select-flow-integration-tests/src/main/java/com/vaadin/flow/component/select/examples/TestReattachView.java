@@ -5,6 +5,7 @@ import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.router.Route;
 
 /*
@@ -19,7 +20,8 @@ public class TestReattachView extends Div {
 
     public TestReattachView() {
         final Select<String> select = new Select<>();
-        select.setRenderer(new ComponentRenderer<>(item -> new Span(item)));
+        final SerializableFunction<String, Span> spanProvider = Span::new;
+        select.setRenderer(new ComponentRenderer<>(spanProvider));
         select.setItems("a", "b", "c");
         select.setValue("a");
         add(select);
@@ -28,13 +30,11 @@ public class TestReattachView extends Div {
             remove(select);
             NativeButton add = new NativeButton("Add", ev -> {
                 add(select);
-                select.setRenderer(
-                        new ComponentRenderer<>(item -> new Span(item)));
+                select.setRenderer(new ComponentRenderer<>(spanProvider));
             });
             add(add);
             remove(event.getSource());
         });
         add(remove);
     }
-
 }
