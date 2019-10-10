@@ -692,6 +692,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
         }
         updateItemEnabled(vaadinItem);
 
+        callClientSideRenderIfNotPending();
     }
 
     private void updateItemEnabled(VaadinItem<T> item) {
@@ -720,6 +721,17 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
         keyMapper.removeAll();
         listBox.removeAll();
         clear();
+        callClientSideRenderIfNotPending();
+
+        if (isEmptySelectionAllowed()) {
+            addEmptySelectionItem();
+        }
+        getDataProvider().fetch(new Query<>()).map(this::createItem)
+                .forEach(this::add);
+    }
+
+    private void callClientSideRenderIfNotPending() {
+
         // reset added at this point to avoid unnecessary selected item update
         if (!resetPending) {
             resetPending = true;
@@ -728,12 +740,6 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
                 resetPending = false;
             });
         }
-
-        if (isEmptySelectionAllowed()) {
-            addEmptySelectionItem();
-        }
-        getDataProvider().fetch(new Query<>()).map(this::createItem)
-                .forEach(this::add);
     }
 
     private void onDataChange(DataChangeEvent<T> event) {
