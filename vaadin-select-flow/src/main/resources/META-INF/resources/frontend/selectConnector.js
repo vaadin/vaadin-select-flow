@@ -20,7 +20,7 @@ initLazy: function (select) {
           const listBox = _findListBoxElement();
           if (listBox) {
               if (root.firstChild) {
-                  root.firstChild.remove();
+                  root.removeChild(root.firstChild);
               }
               root.appendChild(listBox);
           }
