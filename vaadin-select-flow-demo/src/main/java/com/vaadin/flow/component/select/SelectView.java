@@ -262,12 +262,12 @@ public class SelectView extends DemoView {
         Select<String> centerSelect = new Select<>();
         centerSelect.setItems("Left", "Center", "Right");
         centerSelect.setValue("Center");
-        centerSelect.getElement().setAttribute("theme", "align-center");
+        centerSelect.setThemeName("align-center");
 
         Select<String> rightSelect = new Select<>();
         rightSelect.setItems("Left", "Center", "Right");
         rightSelect.setValue("Right");
-        rightSelect.getElement().setAttribute("theme", "align-right");
+        rightSelect.setThemeName("align-right");
         // end-source-example
         div.add(leftSelect, centerSelect, rightSelect);
         leftSelect.getStyle().set("margin-right", "5px");

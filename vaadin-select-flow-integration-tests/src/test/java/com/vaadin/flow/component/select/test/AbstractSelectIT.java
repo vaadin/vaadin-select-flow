@@ -230,6 +230,13 @@ public abstract class AbstractSelectIT extends AbstractComponentIT {
             Assert.assertEquals("invalid text", emptySelectionItemCaption,
                     itemElement.getText());
         }
+
+        public void themeNamePresent(String themeName){
+            Assert.assertTrue("theme attribute missing",
+                    selectElement.hasAttribute("theme"));
+            Assert.assertTrue("theme property has wrong value",
+                    themeName.equals(selectElement.getPropertyString("theme")));
+        }
     }
 
     protected final Page page = new Page();

@@ -92,6 +92,12 @@ public class BasicFeaturesIT extends AbstractSelectIT {
         verify.selectedItem("Item-0");
     }
 
+    @Test
+    public void testThemeNamePresent(){
+        open("theme");
+        verify.themeNamePresent("align-center");
+    }
+
     @Override
     protected int getInitialNumberOfItems() {
         return 5;

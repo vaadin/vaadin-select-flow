@@ -27,6 +27,7 @@ public class TestView extends Div implements HasUrlParameter<String> {
     public static final String SELECT_LAST_ITEM = "Select last item";
     public static final String ITEMS_PARAM = "items=";
     public static final String SELECT_PARAM = "select=";
+    public static final String THEME_PARAM="theme";
     private int valueChangeCounter = 0;
     private int itemCounter = 0;
 
@@ -45,7 +46,6 @@ public class TestView extends Div implements HasUrlParameter<String> {
 
     public TestView() {
         select = new Select<>();
-
         createOptions();
 
         valueChangeContainer = new Div();
@@ -258,6 +258,9 @@ public class TestView extends Div implements HasUrlParameter<String> {
                     parameter.replace("emptyselectioncaption=", ""));
         } else if (parameter.contains("autofocus")) {
             select.setAutofocus(true);
+        }else if(parameter.contains(THEME_PARAM)){
+            select.setThemeName("align-center");
+            setItems(5);
         }
 
         if (parameter.contains("disabled")) {

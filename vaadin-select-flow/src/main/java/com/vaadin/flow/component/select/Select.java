@@ -25,6 +25,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
+import com.vaadin.flow.component.HasTheme;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.Tag;
@@ -63,7 +64,7 @@ import com.vaadin.flow.shared.Registration;
 @JsModule("./selectConnector.js")
 public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
         implements HasDataProvider<T>, HasItemsAndComponents<T>, HasSize,
-        HasValidation, SingleSelect<Select<T>, T> {
+        HasValidation, HasTheme, SingleSelect<Select<T>, T> {
 
     public static final String LABEL_ATTRIBUTE = "label";
 
