@@ -22,7 +22,6 @@
 	</organization>
 
 	<properties>
-		<flow.version>2.0-SNAPSHOT</flow.version>
 		<jetty.plugin.version>9.4.11.v20180605</jetty.plugin.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -31,14 +30,23 @@
 	</properties>
 
 	<repositories>
-	    <repository>
-                <id>vaadin-prereleases</id>
-                <url>https://maven.vaadin.com/vaadin-prereleases</url>
-                <snapshots>
-                    <enabled>true</enabled>
-                </snapshots>
-            </repository>
+		<repository>
+			<id>vaadin-prereleases</id>
+			<url>https://maven.vaadin.com/vaadin-prereleases</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>vaadin-prereleases</id>
+			<url>https://maven.vaadin.com/vaadin-prereleases</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<modules>
 		<module>vaadin-select-flow</module>
