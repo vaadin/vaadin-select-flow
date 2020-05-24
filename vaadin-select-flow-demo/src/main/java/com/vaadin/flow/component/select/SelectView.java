@@ -1,17 +1,23 @@
 package com.vaadin.flow.component.select;
 
+import java.util.List;
+import java.util.Objects;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Hr;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.data.CountryData;
 import com.vaadin.flow.component.select.data.DepartmentData;
 import com.vaadin.flow.component.select.data.TeamData;
+import com.vaadin.flow.component.select.entity.Country;
 import com.vaadin.flow.component.select.entity.Department;
 import com.vaadin.flow.component.select.entity.Team;
 import com.vaadin.flow.component.select.entity.Weekday;
@@ -19,9 +25,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.router.Route;
-
-import java.util.List;
-import java.util.Objects;
 
 @Route("vaadin-select")
 public class SelectView extends DemoView {
@@ -37,9 +40,49 @@ public class SelectView extends DemoView {
         formFieldDemo();
         separatorDemo();// Presentation
         customOptionsDemo();
-        themeVariantsTextAlign(); //ThemeVariants
+        themeVariantsTextAlign(); // ThemeVariants
         themeVariantsSmallSize();
         styling();// Styling
+        dataDemo();
+    }
+
+    private void dataDemo() {
+        VerticalLayout verticalLayout = new VerticalLayout();
+
+        // begin-source-example
+        // source-example-heading: Data
+        Select<Country> select = new Select<>();
+        select.setLabel("Country");
+        List<Country> countryList = getCountries();
+        select.setTextRenderer(Country::getName);
+        select.setItems(countryList);
+        Button previous = new Button(VaadinIcon.ARROW_LEFT.create(),
+                event -> select.getListDataView().selectPreviousItem());
+        Button next = new Button(VaadinIcon.ARROW_RIGHT.create(),
+                event -> select.getListDataView().selectNextItem());
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout(previous,
+                select, next);
+        horizontalLayout.setDefaultVerticalComponentAlignment(
+                FlexComponent.Alignment.END);
+        Span continent = new Span();
+        Span capital = new Span();
+
+        select.addValueChangeListener(event -> {
+            capital.setText("Capital: " + event.getValue().getCapital());
+            continent.setText("Continent: " + event.getValue().getContinent());
+            previous.setEnabled(
+                    select.getListDataView().hasPreviousItem(event.getValue()));
+            next.setEnabled(
+                    select.getListDataView().hasNextItem(event.getValue()));
+        });
+
+        select.setValue(countryList.get(0));
+
+        // end-source-example
+
+        verticalLayout.add(horizontalLayout, continent, capital);
+        addCard("Data", verticalLayout);
     }
 
     private void basicDemo() {
@@ -95,6 +138,11 @@ public class SelectView extends DemoView {
     private List<Team> getTeams() {
         TeamData teamData = new TeamData();
         return teamData.getTeams();
+    }
+
+    private List<Country> getCountries() {
+        CountryData countryData = new CountryData();
+        return countryData.getCountries();
     }
 
     private void entityList() {

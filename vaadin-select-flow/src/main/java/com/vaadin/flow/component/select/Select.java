@@ -30,12 +30,16 @@ import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.select.data.SelectDataController;
+import com.vaadin.flow.component.select.data.SelectListDataView;
 import com.vaadin.flow.component.select.generated.GeneratedVaadinSelect;
 import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.binder.HasItemsAndComponents;
 import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.HasListDataView;
 import com.vaadin.flow.data.provider.KeyMapper;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
@@ -61,9 +65,9 @@ import com.vaadin.flow.shared.Registration;
  * @author Vaadin Ltd.
  */
 @JsModule("./selectConnector.js")
-public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
-        implements HasDataProvider<T>, HasItemsAndComponents<T>, HasSize,
-        HasValidation, SingleSelect<Select<T>, T> {
+public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
+        HasDataProvider<T>, HasItemsAndComponents<T>, HasSize, HasValidation,
+        SingleSelect<Select<T>, T>, HasListDataView<T, SelectListDataView<T>> {
 
     public static final String LABEL_ATTRIBUTE = "label";
 
@@ -86,6 +90,20 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
     }
 
     private final KeyMapper<T> keyMapper = new KeyMapper<>();
+    private final SelectDataController<T> dataController = new SelectDataController<>(
+            this);
+
+    @Override
+    public SelectListDataView<T> setDataProvider(
+            ListDataProvider<T> dataProvider) {
+        this.setDataProvider((DataProvider<T, ?>) dataProvider);
+        return getListDataView();
+    }
+
+    @Override
+    public SelectListDataView<T> getListDataView() {
+        return new SelectListDataView<>(dataController);
+    }
 
     /*
      * Internal version of list box that is just used to delegate the child
