@@ -3,36 +3,46 @@ package com.vaadin.flow.component.select.data;
 import java.util.Optional;
 import java.util.function.Function;
 
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.provider.AbstractListDataView;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.function.SerializableSupplier;
 
 /**
  * An implementation of {@link SelectDataView} for in-memory list data handling
- * 
+ *
  * @param <T>
- *            item type
+ *         item type
  */
 public class SelectListDataView<T> extends AbstractListDataView<T>
         implements SelectDataView<T> {
+    private Select<T> select;
+
     /**
      * Constructs a new SelectListDataView
-     * 
-     * @param dataController
-     *            a SelectDataController
+     *
+     * @param dataProviderSupplier
+     *         supplier from which the DataProvider can be gotten
+     * @param select
+     *         select that the dataView is bound to
      */
-    public SelectListDataView(SelectDataController<T> dataController) {
-        super(dataController);
+    public SelectListDataView(
+            SerializableSupplier<DataProvider<T, ?>> dataProviderSupplier,
+            Select<T> select) {
+        super(dataProviderSupplier, select);
+        this.select = select;
     }
 
     @Override
-    public T getItem(int index) {
-        return getAllItems().skip(index).findFirst()
-                .orElseThrow(IndexOutOfBoundsException::new);
+    public T getItemOnIndex(int index) {
+        validateItemIndex(index);
+        return getAllItems().skip(index).findFirst().orElse(null);
     }
 
     @Override
     public T selectItem(int index) {
-        T item = getItem(index);
-        getDataController().select(item);
+        T item = getItemOnIndex(index);
+        select.setValue(item);
 
         return item;
     }
@@ -47,19 +57,16 @@ public class SelectListDataView<T> extends AbstractListDataView<T>
         return selectAnotherItem(this::getPreviousItem);
     }
 
-    private Optional<T> selectAnotherItem(Function<T, T> otherItem) {
-        T selectedItem = getDataController().getSelectedItem();
-        if (selectedItem == null)
+    private Optional<T> selectAnotherItem(Function<T, T> itemSupplier) {
+        T selectedItem = select.getValue();
+        if (selectedItem == null) {
             return Optional.empty();
-        T previousItem = otherItem.apply(selectedItem);
-        if (previousItem == null)
+        }
+        T previousItem = itemSupplier.apply(selectedItem);
+        if (previousItem == null) {
             return Optional.empty();
-        getDataController().select(previousItem);
+        }
+        select.setValue(previousItem);
         return Optional.of(previousItem);
-    }
-
-    @Override
-    protected SelectDataController<T> getDataController() {
-        return (SelectDataController<T>) super.getDataController();
     }
 }

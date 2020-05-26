@@ -20,7 +20,7 @@ public interface SelectDataView<T> extends DataView<T> {
      * @throws IndexOutOfBoundsException
      *             requested index is outside of the available data set range.
      */
-    T getItem(int index);
+    T getItemOnIndex(int index);
 
     /**
      * Selects the item at the given index in the data set.

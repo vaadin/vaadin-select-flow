@@ -30,7 +30,7 @@ import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.select.data.SelectDataController;
+import com.vaadin.flow.component.select.data.SelectDataView;
 import com.vaadin.flow.component.select.data.SelectListDataView;
 import com.vaadin.flow.component.select.generated.GeneratedVaadinSelect;
 import com.vaadin.flow.data.binder.HasDataProvider;
@@ -40,6 +40,7 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.HasListDataView;
 import com.vaadin.flow.data.provider.KeyMapper;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.provider.ListDataView;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
@@ -90,8 +91,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     }
 
     private final KeyMapper<T> keyMapper = new KeyMapper<>();
-    private final SelectDataController<T> dataController = new SelectDataController<>(
-            this);
+
+    private SelectDataView<T> dataView;
 
     @Override
     public SelectListDataView<T> setDataProvider(
@@ -102,7 +103,16 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
     @Override
     public SelectListDataView<T> getListDataView() {
-        return new SelectListDataView<>(dataController);
+        if (getDataProvider() instanceof ListDataProvider) {
+            if (dataView == null || !(dataView instanceof ListDataView)) {
+                dataView = new SelectListDataView<>(this::getDataProvider,
+                        this);
+            }
+            return (SelectListDataView) dataView;
+        }
+        throw new IllegalStateException(
+                "Required ListDataProvider, but got " + getDataProvider()
+                        .getClass().getSuperclass().getSimpleName());
     }
 
     /*

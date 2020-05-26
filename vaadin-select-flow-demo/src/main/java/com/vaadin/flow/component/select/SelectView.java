@@ -16,8 +16,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.data.CountryData;
 import com.vaadin.flow.component.select.data.DepartmentData;
+import com.vaadin.flow.component.select.data.SelectListDataView;
 import com.vaadin.flow.component.select.data.TeamData;
-import com.vaadin.flow.component.select.entity.Country;
 import com.vaadin.flow.component.select.entity.Department;
 import com.vaadin.flow.component.select.entity.Team;
 import com.vaadin.flow.component.select.entity.Weekday;
@@ -29,6 +29,53 @@ import com.vaadin.flow.router.Route;
 @Route("vaadin-select")
 public class SelectView extends DemoView {
 
+
+    // begin-source-example
+    // source-example-heading: Select example model
+    public static class Country {
+        private String name;
+        private String continent;
+        private String capital;
+
+        public Country(String name, String continent, String capital) {
+            this.name = name;
+            this.continent = continent;
+            this.capital = capital;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getContinent() {
+            return continent;
+        }
+
+        public String getCapital() {
+            return capital;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Country country = (Country) o;
+            return name.equals(country.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name);
+        }
+    }
+
+    // end-source-example
+
+
     @Override
     protected void initView() {
         basicDemo();// Basic usage
@@ -36,53 +83,14 @@ public class SelectView extends DemoView {
         entityList();
         valueChanged();
         disabledItem();
-        configurationForReqiredDemo();// Validation
+        simpleDataNavigationDemo();
+        configurationForRequiredDemo();// Validation
         formFieldDemo();
         separatorDemo();// Presentation
         customOptionsDemo();
         themeVariantsTextAlign(); // ThemeVariants
         themeVariantsSmallSize();
         styling();// Styling
-        dataDemo();
-    }
-
-    private void dataDemo() {
-        VerticalLayout verticalLayout = new VerticalLayout();
-
-        // begin-source-example
-        // source-example-heading: Data
-        Select<Country> select = new Select<>();
-        select.setLabel("Country");
-        List<Country> countryList = getCountries();
-        select.setTextRenderer(Country::getName);
-        select.setItems(countryList);
-        Button previous = new Button(VaadinIcon.ARROW_LEFT.create(),
-                event -> select.getListDataView().selectPreviousItem());
-        Button next = new Button(VaadinIcon.ARROW_RIGHT.create(),
-                event -> select.getListDataView().selectNextItem());
-
-        HorizontalLayout horizontalLayout = new HorizontalLayout(previous,
-                select, next);
-        horizontalLayout.setDefaultVerticalComponentAlignment(
-                FlexComponent.Alignment.END);
-        Span continent = new Span();
-        Span capital = new Span();
-
-        select.addValueChangeListener(event -> {
-            capital.setText("Capital: " + event.getValue().getCapital());
-            continent.setText("Continent: " + event.getValue().getContinent());
-            previous.setEnabled(
-                    select.getListDataView().hasPreviousItem(event.getValue()));
-            next.setEnabled(
-                    select.getListDataView().hasNextItem(event.getValue()));
-        });
-
-        select.setValue(countryList.get(0));
-
-        // end-source-example
-
-        verticalLayout.add(horizontalLayout, continent, capital);
-        addCard("Data", verticalLayout);
     }
 
     private void basicDemo() {
@@ -195,7 +203,50 @@ public class SelectView extends DemoView {
         addCard("Disabled item", select);
     }
 
-    private void configurationForReqiredDemo() {
+    private void simpleDataNavigationDemo() {
+        // begin-source-example
+        // source-example-heading: Data navigation
+        Select<Country> select = new Select<>();
+        select.setLabel("Country");
+        select.setTextRenderer(Country::getName);
+
+        //
+        final SelectListDataView<Country> dataView = select
+                .setDataProvider(getCountries());
+
+        // Navigate data using dataView selectNextItem and selectPreviousItem
+        Button previous = new Button(VaadinIcon.ARROW_LEFT.create(),
+                event -> dataView.selectPreviousItem());
+        Button next = new Button(VaadinIcon.ARROW_RIGHT.create(),
+                event -> dataView.selectNextItem());
+
+        // Arrow buttons to the side and select in the middle
+        HorizontalLayout horizontalLayout = new HorizontalLayout(previous,
+                select, next);
+        horizontalLayout.setDefaultVerticalComponentAlignment(
+                FlexComponent.Alignment.END);
+
+        Span continent = new Span();
+        Span capital = new Span();
+
+        select.addValueChangeListener(event -> {
+            capital.setText("Capital: " + event.getValue().getCapital());
+            continent.setText("Continent: " + event.getValue().getContinent());
+
+            // enabled/disable buttons depending on if we have next or previous item
+            previous.setEnabled(dataView.hasPreviousItem(event.getValue()));
+            next.setEnabled(dataView.hasNextItem(event.getValue()));
+        });
+
+        dataView.selectItem(0);
+        // end-source-example
+
+        VerticalLayout verticalLayout = new VerticalLayout(horizontalLayout,
+                continent, capital);
+        addCard("Data navigation", verticalLayout);
+    }
+
+    private void configurationForRequiredDemo() {
         // begin-source-example
         // source-example-heading: Required
         Select<String> requiredSelect = new Select<>();

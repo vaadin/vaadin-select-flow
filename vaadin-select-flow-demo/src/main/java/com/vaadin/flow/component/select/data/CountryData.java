@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.vaadin.flow.component.select.entity.Country;
+import com.vaadin.flow.component.select.SelectView.Country;
 
 public class CountryData {
     private final static List<Country> COUNTRY_LIST = createCountryList();
