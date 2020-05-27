@@ -72,6 +72,31 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
     public static final String LABEL_ATTRIBUTE = "label";
 
+    private final InternalListBox listBox = new InternalListBox();
+
+    private DataProvider<T, ?> dataProvider = DataProvider.ofItems();
+
+    private ComponentRenderer<? extends Component, T> itemRenderer;
+
+    private SerializablePredicate<T> itemEnabledProvider = null;
+
+    private ItemLabelGenerator<T> itemLabelGenerator = null;
+
+    private final PropertyChangeListener validationListener = this::validateSelectionEnabledState;
+    private Registration validationRegistration;
+    private Registration dataProviderListenerRegistration;
+    private boolean resetPending = true;
+
+    private boolean emptySelectionAllowed;
+
+    private String emptySelectionCaption;
+
+    private VaadinItem<T> emptySelectionItem;
+
+    private final KeyMapper<T> keyMapper = new KeyMapper<>();
+
+    private SelectDataView<T> dataView;
+
     private static <T> T presentationToModel(Select<T> select,
             String presentation) {
         if (!select.keyMapper.containsKey(presentation)) {
@@ -129,31 +154,6 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
             }
         }
     }
-
-    private final InternalListBox listBox = new InternalListBox();
-
-    private DataProvider<T, ?> dataProvider = DataProvider.ofItems();
-
-    private ComponentRenderer<? extends Component, T> itemRenderer;
-
-    private SerializablePredicate<T> itemEnabledProvider = null;
-
-    private ItemLabelGenerator<T> itemLabelGenerator = null;
-
-    private final PropertyChangeListener validationListener = this::validateSelectionEnabledState;
-    private Registration validationRegistration;
-    private Registration dataProviderListenerRegistration;
-    private boolean resetPending = true;
-
-    private boolean emptySelectionAllowed;
-
-    private String emptySelectionCaption;
-
-    private VaadinItem<T> emptySelectionItem;
-
-    private final KeyMapper<T> keyMapper = new KeyMapper<>();
-
-    private SelectDataView<T> dataView;
 
     /**
      * Constructs a select.
