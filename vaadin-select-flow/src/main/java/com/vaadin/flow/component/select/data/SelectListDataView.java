@@ -62,11 +62,11 @@ public class SelectListDataView<T> extends AbstractListDataView<T>
         if (selectedItem == null) {
             return Optional.empty();
         }
-        T previousItem = itemSupplier.apply(selectedItem);
-        if (previousItem == null) {
+        T newItem = itemSupplier.apply(selectedItem);
+        if (newItem == null) {
             return Optional.empty();
         }
-        select.setValue(previousItem);
-        return Optional.of(previousItem);
+        select.setValue(newItem);
+        return Optional.of(newItem);
     }
 }
