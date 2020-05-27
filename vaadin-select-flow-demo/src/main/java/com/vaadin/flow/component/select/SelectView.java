@@ -55,6 +55,18 @@ public class SelectView extends DemoView {
             return capital;
         }
 
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public void setContinent(String continent) {
+            this.continent = continent;
+        }
+
+        public void setCapital(String capital) {
+            this.capital = capital;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) {
@@ -70,6 +82,11 @@ public class SelectView extends DemoView {
         @Override
         public int hashCode() {
             return Objects.hash(name);
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(name);
         }
     }
 
