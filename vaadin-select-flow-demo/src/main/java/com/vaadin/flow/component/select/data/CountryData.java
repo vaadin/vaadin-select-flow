@@ -7,7 +7,7 @@ import java.util.List;
 import com.vaadin.flow.component.select.SelectView.Country;
 
 public class CountryData {
-    private final static List<Country> COUNTRY_LIST = createCountryList();
+    private static final List<Country> COUNTRY_LIST = createCountryList();
 
     private static List<Country> createCountryList() {
         List<Country> countryList = new ArrayList<>();

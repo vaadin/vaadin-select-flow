@@ -90,31 +90,6 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         return select.keyMapper.key(model);
     }
 
-    private final KeyMapper<T> keyMapper = new KeyMapper<>();
-
-    private SelectDataView<T> dataView;
-
-    @Override
-    public SelectListDataView<T> setDataProvider(
-            ListDataProvider<T> dataProvider) {
-        this.setDataProvider((DataProvider<T, ?>) dataProvider);
-        return getListDataView();
-    }
-
-    @Override
-    public SelectListDataView<T> getListDataView() {
-        if (getDataProvider() instanceof ListDataProvider) {
-            if (dataView == null || !(dataView instanceof ListDataView)) {
-                dataView = new SelectListDataView<>(this::getDataProvider,
-                        this);
-            }
-            return (SelectListDataView) dataView;
-        }
-        throw new IllegalStateException(
-                "Required ListDataProvider, but got " + getDataProvider()
-                        .getClass().getSuperclass().getSimpleName());
-    }
-
     /*
      * Internal version of list box that is just used to delegate the child
      * components to. vaadin-select.html imports vaadin-list-box.html.
@@ -175,6 +150,10 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     private String emptySelectionCaption;
 
     private VaadinItem<T> emptySelectionItem;
+
+    private final KeyMapper<T> keyMapper = new KeyMapper<>();
+
+    private SelectDataView<T> dataView;
 
     /**
      * Constructs a select.
@@ -459,6 +438,28 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
      */
     public DataProvider<T, ?> getDataProvider() {
         return dataProvider;
+    }
+
+
+    @Override
+    public SelectListDataView<T> setDataProvider(
+            ListDataProvider<T> dataProvider) {
+        this.setDataProvider((DataProvider<T, ?>) dataProvider);
+        return getListDataView();
+    }
+
+    @Override
+    public SelectListDataView<T> getListDataView() {
+        if (getDataProvider() instanceof ListDataProvider) {
+            if (dataView == null || !(dataView instanceof ListDataView)) {
+                dataView = new SelectListDataView<>(this::getDataProvider,
+                        this);
+            }
+            return (SelectListDataView) dataView;
+        }
+        throw new IllegalStateException(
+                "Required ListDataProvider, but got " + getDataProvider()
+                        .getClass().getSuperclass().getSimpleName());
     }
 
     @Override
