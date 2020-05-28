@@ -74,6 +74,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
     public static final String LABEL_ATTRIBUTE = "label";
 
+    private static final String VALUE_PROPERTY_NAME = "value";
+
     private final InternalListBox listBox = new InternalListBox();
 
     private DataProvider<T, ?> dataProvider = DataProvider.ofItems();
@@ -100,6 +102,33 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     private SelectDataView<T> dataView;
 
     private int dataSize;
+
+    /**
+     * Constructs a select.
+     */
+    public Select() {
+        super(null, null, String.class, Select::presentationToModel,
+                Select::modelToPresentation);
+
+        getElement().setProperty("invalid", false);
+        getElement().setProperty("opened", false);
+
+        getElement().appendChild(listBox.getElement());
+
+        registerValidation();
+    }
+
+    /**
+     * Constructs a select with the given items.
+     *
+     * @param items
+     *            the items for the select
+     */
+    public Select(T... items) {
+        this();
+
+        setItems(items);
+    }
 
     private static <T> T presentationToModel(Select<T> select,
             String presentation) {
@@ -157,33 +186,6 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
                 return HasItemsAndComponents.super.getItemPosition(item);
             }
         }
-    }
-
-    /**
-     * Constructs a select.
-     */
-    public Select() {
-        super(null, null, String.class, Select::presentationToModel,
-                Select::modelToPresentation);
-
-        getElement().setProperty("invalid", false);
-        getElement().setProperty("opened", false);
-
-        getElement().appendChild(listBox.getElement());
-
-        registerValidation();
-    }
-
-    /**
-     * Constructs a select with the given items.
-     *
-     * @param items
-     *            the items for the select
-     */
-    public Select(T... items) {
-        this();
-
-        setItems(items);
     }
 
     /**
@@ -666,7 +668,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         // the _value_ of this field. E.g, it might be a value that is
         // acceptable,
         // but the component status should still be _invalid_.
-        String selectedKey = getElement().getProperty("value");
+        String selectedKey = getElement().getProperty(VALUE_PROPERTY_NAME);
         T item = keyMapper.get(selectedKey);
         if (item == null) {
             return isEmptySelectionAllowed() && isItemEnabled(item);
@@ -835,7 +837,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
             // return the value back on the client side
             try {
                 validationRegistration.remove();
-                getElement().setProperty("value", keyMapper.key(oldValue));
+                getElement().setProperty(VALUE_PROPERTY_NAME, keyMapper.key(oldValue));
             } finally {
                 registerValidation();
             }
@@ -852,7 +854,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         if (validationRegistration != null) {
             validationRegistration.remove();
         }
-        validationRegistration = getElement().addPropertyChangeListener("value",
+        validationRegistration = getElement().addPropertyChangeListener(VALUE_PROPERTY_NAME,
                 validationListener);
     }
 
