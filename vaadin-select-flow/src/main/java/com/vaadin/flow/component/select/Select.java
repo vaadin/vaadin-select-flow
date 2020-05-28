@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import com.vaadin.flow.component.AttachEvent;
@@ -42,6 +43,7 @@ import com.vaadin.flow.data.provider.KeyMapper;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.ListDataView;
 import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.data.provider.SizeChangeEvent;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.selection.SingleSelect;
@@ -96,6 +98,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     private final KeyMapper<T> keyMapper = new KeyMapper<>();
 
     private SelectDataView<T> dataView;
+
+    private int dataSize;
 
     private static <T> T presentationToModel(Select<T> select,
             String presentation) {
@@ -755,8 +759,19 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         if (isEmptySelectionAllowed()) {
             addEmptySelectionItem();
         }
+
+        final AtomicInteger itemCounter = new AtomicInteger(0);
         getDataProvider().fetch(new Query<>()).map(this::createItem)
-                .forEach(this::add);
+                .forEach(component -> {
+                    add(component);
+                    itemCounter.incrementAndGet();
+                });
+
+        final int newDataSize = itemCounter.get();
+        if (dataSize != newDataSize) {
+            dataSize = newDataSize;
+            fireEvent(new SizeChangeEvent<>(this, newDataSize));
+        }
     }
 
     private void callClientSideRenderIfNotPending() {

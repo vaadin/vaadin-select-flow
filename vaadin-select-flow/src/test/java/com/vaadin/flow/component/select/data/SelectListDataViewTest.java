@@ -16,16 +16,18 @@
 
 package com.vaadin.flow.component.select.data;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
+import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.data.provider.ListDataProvider;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SelectListDataViewTest {
 
@@ -110,6 +112,56 @@ public class SelectListDataViewTest {
                 select.getValue());
         Assert.assertEquals("Unexpected item selected as previous", items[0],
                 previousItem.get());
+    }
+
+    @Test
+    public void addSizeChangeListener_sizeChanged_listenersAreNotified() {
+        Select<String> select = new Select<>();
+        SelectListDataView<String> dataView =
+                select.setDataProvider(Arrays.stream(items));
+
+        AtomicInteger invocationCounter = new AtomicInteger(0);
+
+        dataView.addSizeChangeListener(event -> invocationCounter.incrementAndGet());
+
+        dataView.withFilter("one"::equals);
+        dataView.withFilter(null);
+        dataView.addItemAfter("five", "four");
+        dataView.addItemBefore("zero", "one");
+        dataView.addItem("last");
+        dataView.removeItem("zero");
+
+        Assert.assertEquals(
+                "Unexpected count of size change listener invocations occurred",
+                6, invocationCounter.get());
+    }
+
+    @Test
+    public void addSizeChangeListener_sizeNotChanged_listenersAreNotNotified() {
+        Select<String> select = new Select<>();
+        SelectListDataView<String> dataView = select.setDataProvider(items);
+
+        AtomicBoolean invocationChecker = new AtomicBoolean(false);
+
+        dataView.addSizeChangeListener(event ->
+                invocationChecker.getAndSet(true));
+
+        dataView.withSortComparator(String::compareTo);
+
+        Assert.assertFalse("Unexpected size change listener invocation",
+                invocationChecker.get());
+    }
+
+    @Test
+    public void addSizeChangeListener_sizeChanged_newSizeSuppliedInEvent() {
+        Select<String> select = new Select<>();
+        SelectListDataView<String> dataView = select.setDataProvider(items);
+
+        dataView.addSizeChangeListener(event -> {
+            Assert.assertEquals("Unexpected data size",1, event.getSize());
+        });
+
+        dataView.withFilter("one"::equals);
     }
 
 }
