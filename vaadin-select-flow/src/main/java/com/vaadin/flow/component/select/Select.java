@@ -101,7 +101,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
     private SelectDataView<T> dataView;
 
-    private int dataSize;
+    private int dataSize = -1;
 
     /**
      * Constructs a select.
@@ -762,18 +762,14 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
             addEmptySelectionItem();
         }
 
-        final AtomicInteger itemCounter = new AtomicInteger(0);
         getDataProvider().fetch(new Query<>()).map(this::createItem)
-                .forEach(component -> {
-                    add(component);
-                    itemCounter.incrementAndGet();
-                });
+                .forEach(this::add);
 
-        final int newDataSize = itemCounter.get();
-        if (dataSize != newDataSize) {
-            dataSize = newDataSize;
-            fireEvent(new SizeChangeEvent<>(this, newDataSize));
-        }
+        runBeforeClientResponse(ui -> {
+            // Size event is fired before client response so as to avoid
+            // multiple size change events during server round trips
+            fireSizeEvent();
+        });
     }
 
     private void callClientSideRenderIfNotPending() {
@@ -861,5 +857,13 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     private void runBeforeClientResponse(SerializableConsumer<UI> command) {
         getElement().getNode().runWhenAttached(ui -> ui
                 .beforeClientResponse(this, context -> command.accept(ui)));
+    }
+
+    private void fireSizeEvent() {
+        final int newDataSize = getDataProvider().size(new Query<>());
+        if (dataSize != newDataSize) {
+            dataSize = newDataSize;
+            fireEvent(new SizeChangeEvent<>(this, newDataSize));
+        }
     }
 }

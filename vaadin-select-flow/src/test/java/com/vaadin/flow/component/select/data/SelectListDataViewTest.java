@@ -16,8 +16,12 @@
 
 package com.vaadin.flow.component.select.data;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinSession;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,6 +32,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class SelectListDataViewTest {
 
@@ -124,6 +130,9 @@ public class SelectListDataViewTest {
 
         dataView.addSizeChangeListener(event -> invocationCounter.incrementAndGet());
 
+        UI ui = new MockUI();
+        ui.add(select);
+
         dataView.withFilter("one"::equals);
         dataView.withFilter(null);
         dataView.addItemAfter("five", "four");
@@ -131,9 +140,11 @@ public class SelectListDataViewTest {
         dataView.addItem("last");
         dataView.removeItem("zero");
 
+        fakeClientCall(ui);
+
         Assert.assertEquals(
                 "Unexpected count of size change listener invocations occurred",
-                6, invocationCounter.get());
+                1, invocationCounter.get());
     }
 
     @Test
@@ -143,10 +154,19 @@ public class SelectListDataViewTest {
 
         AtomicBoolean invocationChecker = new AtomicBoolean(false);
 
+        UI ui = new MockUI();
+        ui.add(select);
+
+        // Make initial size change
+        fakeClientCall(ui);
+
         dataView.addSizeChangeListener(event ->
                 invocationChecker.getAndSet(true));
 
         dataView.withSortComparator(String::compareTo);
+
+        // Make size change after sort. No event should be sent as size stays the same.
+        fakeClientCall(ui);
 
         Assert.assertFalse("Unexpected size change listener invocation",
                 invocationChecker.get());
@@ -157,11 +177,105 @@ public class SelectListDataViewTest {
         Select<String> select = new Select<>();
         SelectListDataView<String> dataView = select.setDataProvider(items);
 
+        AtomicBoolean invocationChecker = new AtomicBoolean(false);
+
+        UI ui = new MockUI();
+        ui.add(select);
+
+        // Make initial size event
+        fakeClientCall(ui);
+
         dataView.addSizeChangeListener(event -> {
             Assert.assertEquals("Unexpected data size",1, event.getSize());
+            invocationChecker.set(true);
         });
 
         dataView.withFilter("one"::equals);
+
+        // Size change should be sent as size has changed after filtering.
+        fakeClientCall(ui);
+
+        Assert.assertTrue("Size change never called", invocationChecker.get());
+    }
+
+    private void fakeClientCall(UI ui) {
+        ui.getInternals().getStateTree().runExecutionsBeforeClientResponse();
+        ui.getInternals().getStateTree().collectChanges(ignore -> {
+        });
+    }
+
+    private static class MockUI extends UI {
+
+        public MockUI() {
+            this(findOrcreateSession());
+        }
+
+        public MockUI(VaadinSession session) {
+            getInternals().setSession(session);
+            setCurrent(this);
+        }
+
+        @Override
+        protected void init(VaadinRequest request) {
+            // Do nothing
+        }
+
+        private static VaadinSession findOrcreateSession() {
+            VaadinSession session = VaadinSession.getCurrent();
+            if (session == null) {
+                session = new AlwaysLockedVaadinSession(null);
+                VaadinSession.setCurrent(session);
+            }
+            return session;
+        }
+    }
+
+    private static class AlwaysLockedVaadinSession extends MockVaadinSession {
+
+        public AlwaysLockedVaadinSession(VaadinService service) {
+            super(service);
+            lock();
+        }
+
+    }
+
+    private static class MockVaadinSession extends VaadinSession {
+        /*
+         * Used to make sure there's at least one reference to the mock session
+         * while it's locked. This is used to prevent the session from being
+         * eaten by GC in tests where @Before creates a session and sets it as
+         * the current instance without keeping any direct reference to it. This
+         * pattern has a chance of leaking memory if the session is not unlocked
+         * in the right way, but it should be acceptable for testing use.
+         */
+        private static final ThreadLocal<MockVaadinSession> referenceKeeper = new ThreadLocal<>();
+        private ReentrantLock lock = new ReentrantLock();
+
+        public MockVaadinSession(VaadinService service) {
+            super(service);
+        }
+
+        @Override
+        public void close() {
+            super.close();
+        }
+
+        @Override
+        public Lock getLockInstance() {
+            return lock;
+        }
+
+        @Override
+        public void lock() {
+            super.lock();
+            referenceKeeper.set(this);
+        }
+
+        @Override
+        public void unlock() {
+            super.unlock();
+            referenceKeeper.remove();
+        }
     }
 
 }
