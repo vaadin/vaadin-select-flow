@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import com.vaadin.flow.component.AttachEvent;
@@ -78,7 +79,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
     private final InternalListBox listBox = new InternalListBox();
 
-    private DataProvider<T, ?> dataProvider = DataProvider.ofItems();
+    private final AtomicReference<DataProvider<T, ?>> dataProvider =
+            new AtomicReference<>(DataProvider.ofItems());
 
     private ComponentRenderer<? extends Component, T> itemRenderer;
 
@@ -429,7 +431,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
     @Override
     public void setDataProvider(DataProvider<T, ?> dataProvider) {
-        this.dataProvider = dataProvider;
+        this.dataProvider.set(dataProvider);
         reset();
 
         if (dataProviderListenerRegistration != null) {
@@ -445,7 +447,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
      * @return the data provider, not {@code null}
      */
     public DataProvider<T, ?> getDataProvider() {
-        return dataProvider;
+        return dataProvider.get();
     }
 
 
@@ -764,14 +766,15 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
             addEmptySelectionItem();
         }
 
-        final AtomicInteger itemCounter = new AtomicInteger(0);
-        getDataProvider().fetch(new Query<>()).map(this::createItem)
-                .forEach(component -> {
-                    add(component);
-                    itemCounter.incrementAndGet();
-                });
-
-        lastFetchedDataSize = itemCounter.get();
+        synchronized (dataProvider) {
+            final AtomicInteger itemCounter = new AtomicInteger(0);
+            getDataProvider().fetch(new Query<>()).map(this::createItem)
+                    .forEach(component -> {
+                        add(component);
+                        itemCounter.incrementAndGet();
+                    });
+            lastFetchedDataSize = itemCounter.get();
+        }
 
         runBeforeClientResponse(ui -> {
             // Size event is fired before client response so as to avoid
