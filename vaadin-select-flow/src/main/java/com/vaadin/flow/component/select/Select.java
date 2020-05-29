@@ -101,7 +101,9 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
     private SelectDataView<T> dataView;
 
-    private int dataSize = -1;
+    private int lastNotifiedDataSize = -1;
+
+    private volatile int lastFetchedDataSize = -1;
 
     /**
      * Constructs a select.
@@ -762,8 +764,14 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
             addEmptySelectionItem();
         }
 
+        final AtomicInteger itemCounter = new AtomicInteger(0);
         getDataProvider().fetch(new Query<>()).map(this::createItem)
-                .forEach(this::add);
+                .forEach(component -> {
+                    add(component);
+                    itemCounter.incrementAndGet();
+                });
+
+        lastFetchedDataSize = itemCounter.get();
 
         runBeforeClientResponse(ui -> {
             // Size event is fired before client response so as to avoid
@@ -860,10 +868,10 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     }
 
     private void fireSizeEvent() {
-        final int newDataSize = getDataProvider().size(new Query<>());
-        if (dataSize != newDataSize) {
-            dataSize = newDataSize;
-            fireEvent(new SizeChangeEvent<>(this, newDataSize));
+        final int newSize = lastFetchedDataSize;
+        if (lastNotifiedDataSize != newSize) {
+            lastNotifiedDataSize = newSize;
+            fireEvent(new SizeChangeEvent<>(this, newSize));
         }
     }
 }
