@@ -107,6 +107,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
     private volatile int lastFetchedDataSize = -1;
 
+    private SerializableConsumer<UI> sizeRequest;
+
     /**
      * Constructs a select.
      */
@@ -774,13 +776,19 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
                         itemCounter.incrementAndGet();
                     });
             lastFetchedDataSize = itemCounter.get();
-        }
 
-        runBeforeClientResponse(ui -> {
-            // Size event is fired before client response so as to avoid
-            // multiple size change events during server round trips
-            fireSizeEvent();
-        });
+            // Ignore new size requests unless the last one has been executed
+            // so as to avoid multiple beforeClientResponses.
+            if (sizeRequest == null) {
+                sizeRequest = context -> {
+                    fireSizeEvent();
+                    sizeRequest = null;
+                };
+                // Size event is fired before client response so as to avoid
+                // multiple size change events during server round trips
+                runBeforeClientResponse(sizeRequest);
+            }
+        }
     }
 
     private void callClientSideRenderIfNotPending() {
