@@ -40,6 +40,7 @@ import com.vaadin.flow.data.binder.HasItemsAndComponents;
 import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.HasListDataView;
+import com.vaadin.flow.data.provider.HasLazyDataView;
 import com.vaadin.flow.data.provider.KeyMapper;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.ListDataView;
@@ -431,7 +432,44 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         return super.isAutofocusBoolean();
     }
 
+
+    /**
+     * @inheritDocs
+     * @deprecated use {@link HasListDataView#setDataSource(Object[])} )}
+     */
     @Override
+    @Deprecated
+    public void setItems(T... items) {
+        setDataSource(items);
+    }
+
+    /**
+     * @inheritDocs
+     * @deprecated use {@link HasListDataView#setDataSource(Collection)}
+     */
+    @Override
+    @Deprecated
+    public void setItems(Collection<T> items) {
+        setDataSource(items);
+    }
+
+    /**
+     * @inheritDocs
+     * @deprecated use {@link HasListDataView#setDataSource(Stream)}
+     */
+    @Override
+    @Deprecated
+    public void setItems(Stream<T> streamOfItems) {
+        setDataSource(streamOfItems);
+    }
+
+    /**
+     * @inheritDocs
+     * @deprecated use instead one of the setDataSource methods from
+     * {@link HasListDataView} or {@link HasLazyDataView}
+     */
+    @Override
+    @Deprecated
     public void setDataProvider(DataProvider<T, ?> dataProvider) {
         this.dataProvider.set(dataProvider);
         reset();
@@ -454,7 +492,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
 
     @Override
-    public SelectListDataView<T> setDataProvider(
+    public SelectListDataView<T> setDataSource(
             ListDataProvider<T> dataProvider) {
         this.setDataProvider((DataProvider<T, ?>) dataProvider);
         return getListDataView();
