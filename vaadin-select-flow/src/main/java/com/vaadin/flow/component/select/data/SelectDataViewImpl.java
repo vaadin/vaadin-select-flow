@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.provider.AbstractDataView;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.SizeChangeEvent;
@@ -38,10 +39,7 @@ import com.vaadin.flow.shared.Registration;
  *         item type
  * @since
  */
-public class SelectDataViewImpl<T> implements SelectDataView<T> {
-
-    protected SerializableSupplier<? extends DataProvider<T, ?>> dataProviderSupplier;
-    protected Select<T> select;
+public class SelectDataViewImpl<T> extends AbstractDataView<T> implements SelectDataView<T> {
 
     /**
      * Constructs a new DataView.
@@ -54,8 +52,7 @@ public class SelectDataViewImpl<T> implements SelectDataView<T> {
     public SelectDataViewImpl(
             SerializableSupplier<DataProvider<T, ?>> dataProviderSupplier,
             Select<T> select) {
-        this.dataProviderSupplier = dataProviderSupplier;
-        this.select = select;
+        super(dataProviderSupplier, select);
     }
 
     @Override
@@ -70,16 +67,6 @@ public class SelectDataViewImpl<T> implements SelectDataView<T> {
     }
 
     @Override
-    public Stream<T> getItems() {
-        return dataProviderSupplier.get().fetch(new Query<>());
-    }
-
-    @Override
-    public int getSize() {
-        return dataProviderSupplier.get().size(new Query<>());
-    }
-
-    @Override
     public boolean contains(T item) {
         final DataProvider<T, ?> dataProvider = dataProviderSupplier.get();
         final Object itemIdentifier = dataProvider.getId(item);
@@ -88,11 +75,8 @@ public class SelectDataViewImpl<T> implements SelectDataView<T> {
     }
 
     @Override
-    public Registration addSizeChangeListener(
-            ComponentEventListener<SizeChangeEvent<?>> listener) {
-        Objects.requireNonNull(listener, "SizeChangeListener cannot be null");
-        return ComponentUtil.addListener(select, SizeChangeEvent.class,
-                (ComponentEventListener) listener);
+    protected Class<?> getSupportedDataProviderType() {
+        return DataProvider.class;
     }
 
 }

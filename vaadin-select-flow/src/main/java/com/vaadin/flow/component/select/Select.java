@@ -42,7 +42,6 @@ import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.HasDataView;
 import com.vaadin.flow.data.provider.HasListDataView;
-import com.vaadin.flow.data.provider.HasLazyDataView;
 import com.vaadin.flow.data.provider.KeyMapper;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.ListDataView;
@@ -437,7 +436,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
 
 
     /**
-     * @inheritDocs
+     * {@inheritDoc}
      * @deprecated use {@link HasListDataView#setDataSource(Object[])} )}
      */
     @Override
@@ -447,7 +446,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     }
 
     /**
-     * @inheritDocs
+     * {@inheritDoc}
      * @deprecated use {@link HasListDataView#setDataSource(Collection)}
      */
     @Override
@@ -457,7 +456,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     }
 
     /**
-     * @inheritDocs
+     * {@inheritDoc}
      * @deprecated use {@link HasListDataView#setDataSource(Stream)}
      */
     @Override
@@ -467,9 +466,9 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     }
 
     /**
-     * @inheritDocs
+     * {@inheritDoc}
      * @deprecated use instead one of the setDataSource methods from
-     * {@link HasListDataView} or {@link HasLazyDataView}
+     * {@link HasListDataView}
      */
     @Override
     @Deprecated
@@ -507,17 +506,16 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     }
 
     /**
-     * Getter for getting a generic SelectDataView. This should be used
-     * only when
-     * neither {@link #getListDataView()} nor #getLazyDataView are applicable
-     * for the underlying dataSource.
+     * Getter for getting a generic SelectDataView.
+     * <p>
+     * {@link #getListDataView()} is recommended when the backing data source is
+     * a List.
      *
      * @return DataView instance implementing {@link SelectDataView}
      */
     public SelectDataView<T> getDataView() {
         if (dataView == null) {
-            dataView = new SelectDataViewImpl(this::getDataProvider,
-                    this);
+            dataView = new SelectDataViewImpl(this::getDataProvider, this);
         }
         return dataView;
     }
