@@ -513,6 +513,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
      *
      * @return DataView instance implementing {@link SelectDataView}
      */
+    @Override
     public SelectDataView<T> getDataView() {
         if (dataView == null) {
             dataView = new SelectDataViewImpl(this::getDataProvider, this);
@@ -529,9 +530,10 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
             }
             return (SelectListDataView) dataView;
         }
-        throw new IllegalStateException(
-                "Required ListDataProvider, but got " + getDataProvider()
-                        .getClass().getSuperclass().getSimpleName());
+        throw new IllegalStateException(String.format(
+                "Required ListDataProvider, but got '%s'. Use 'getDataView()' "
+                        + "to get a generic DataView instance.",
+                getDataProvider().getClass().getSuperclass().getSimpleName()));
     }
 
     @Override
