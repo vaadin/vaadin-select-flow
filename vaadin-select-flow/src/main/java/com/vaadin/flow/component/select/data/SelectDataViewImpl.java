@@ -16,18 +16,10 @@
 
 package com.vaadin.flow.component.select.data;
 
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.provider.AbstractDataView;
 import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.data.provider.SizeChangeEvent;
 import com.vaadin.flow.function.SerializableSupplier;
-import com.vaadin.flow.shared.Registration;
 
 /**
  * Implementation of the base DataView applicable for use with any
@@ -39,7 +31,8 @@ import com.vaadin.flow.shared.Registration;
  *         item type
  * @since
  */
-public class SelectDataViewImpl<T> extends AbstractDataView<T> implements SelectDataView<T> {
+public class SelectDataViewImpl<T> extends AbstractDataView<T>
+        implements SelectDataView<T> {
 
     /**
      * Constructs a new DataView.
