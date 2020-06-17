@@ -44,7 +44,6 @@ import com.vaadin.flow.data.provider.HasDataView;
 import com.vaadin.flow.data.provider.HasListDataView;
 import com.vaadin.flow.data.provider.KeyMapper;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.provider.ListDataView;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.SizeChangeEvent;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -54,6 +53,7 @@ import com.vaadin.flow.dom.PropertyChangeEvent;
 import com.vaadin.flow.dom.PropertyChangeListener;
 import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.function.SerializablePredicate;
+import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
 
 /**
@@ -103,6 +103,8 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     private VaadinItem<T> emptySelectionItem;
 
     private final KeyMapper<T> keyMapper = new KeyMapper<>();
+
+    private ValueProvider<T, ?> identityProvider = ValueProvider.identity();
 
     private int lastNotifiedDataSize = -1;
 
@@ -472,6 +474,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     @Deprecated
     public void setDataProvider(DataProvider<T, ?> dataProvider) {
         this.dataProvider.set(dataProvider);
+        this.identityProvider = dataProvider::getId;
         reset();
 
         if (dataProviderListenerRegistration != null) {
@@ -721,6 +724,19 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         getChildren().forEach(this::remove);
     }
 
+    /**
+     * Sets identity provider to be used for getting item identifier and
+     * compare the items using that identifier.
+     *
+     * @param identityProvider
+     *           function that returns the non-null identifier for a given item
+     */
+    public void setIdentityProvider(ValueProvider<T, ?> identityProvider) {
+        Objects.requireNonNull(identityProvider,
+                "Item identity provider cannot be null");
+        this.identityProvider = identityProvider;
+    }
+
     @Override
     protected boolean hasValidValue() {
         // this is not about whether the value is actually "valid",
@@ -861,10 +877,10 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         if (event instanceof DataChangeEvent.DataRefreshEvent) {
             T updatedItem = ((DataChangeEvent.DataRefreshEvent<T>) event)
                     .getItem();
-            Object updatedItemId = getDataProvider().getId(updatedItem);
+            Object updatedItemId = identityProvider.apply(updatedItem);
             getItems()
                     .filter(vaadinItem -> updatedItemId.equals(
-                            getDataProvider().getId(vaadinItem.getItem())))
+                            identityProvider.apply(vaadinItem.getItem())))
                     .findAny().ifPresent(this::updateItem);
         } else {
             reset();
