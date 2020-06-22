@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValidation;
@@ -42,6 +43,7 @@ import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.HasDataView;
 import com.vaadin.flow.data.provider.HasListDataView;
+import com.vaadin.flow.data.provider.IdentityProvider;
 import com.vaadin.flow.data.provider.KeyMapper;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
@@ -53,7 +55,6 @@ import com.vaadin.flow.dom.PropertyChangeEvent;
 import com.vaadin.flow.dom.PropertyChangeListener;
 import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.function.SerializablePredicate;
-import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
 
 /**
@@ -103,8 +104,6 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     private VaadinItem<T> emptySelectionItem;
 
     private final KeyMapper<T> keyMapper = new KeyMapper<>();
-
-    private ValueProvider<T, ?> identityProvider = ValueProvider.identity();
 
     private int lastNotifiedDataSize = -1;
 
@@ -474,7 +473,6 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     @Deprecated
     public void setDataProvider(DataProvider<T, ?> dataProvider) {
         this.dataProvider.set(dataProvider);
-        this.identityProvider = dataProvider::getId;
         reset();
 
         if (dataProviderListenerRegistration != null) {
@@ -724,19 +722,6 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         getChildren().forEach(this::remove);
     }
 
-    /**
-     * Sets identity provider to be used for getting item identifier and
-     * compare the items using that identifier.
-     *
-     * @param identityProvider
-     *           function that returns the non-null identifier for a given item
-     */
-    public void setIdentityProvider(ValueProvider<T, ?> identityProvider) {
-        Objects.requireNonNull(identityProvider,
-                "Item identity provider cannot be null");
-        this.identityProvider = identityProvider;
-    }
-
     @Override
     protected boolean hasValidValue() {
         // this is not about whether the value is actually "valid",
@@ -877,6 +862,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         if (event instanceof DataChangeEvent.DataRefreshEvent) {
             T updatedItem = ((DataChangeEvent.DataRefreshEvent<T>) event)
                     .getItem();
+            IdentityProvider<T> identityProvider = getIdentityProvider();
             Object updatedItemId = identityProvider.apply(updatedItem);
             getItems()
                     .filter(vaadinItem -> updatedItemId.equals(
@@ -953,6 +939,23 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         if (lastNotifiedDataSize != newSize) {
             lastNotifiedDataSize = newSize;
             fireEvent(new SizeChangeEvent<>(this, newSize));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private IdentityProvider<T> getIdentityProvider() {
+        IdentityProvider<T> identityProviderObject =
+                (IdentityProvider<T>) ComponentUtil.getData(this,
+                        IdentityProvider.class);
+        if (identityProviderObject == null) {
+            DataProvider<T, ?> dataProvider = getDataProvider();
+            if (dataProvider != null) {
+                return dataProvider::getId;
+            } else {
+                return IdentityProvider.identity();
+            }
+        } else {
+            return identityProviderObject;
         }
     }
 }
