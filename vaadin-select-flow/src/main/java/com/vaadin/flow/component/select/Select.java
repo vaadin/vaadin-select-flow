@@ -43,7 +43,7 @@ import com.vaadin.flow.data.provider.DataChangeEvent;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.HasDataView;
 import com.vaadin.flow.data.provider.HasListDataView;
-import com.vaadin.flow.data.provider.IdentityProvider;
+import com.vaadin.flow.data.provider.IdentifierProvider;
 import com.vaadin.flow.data.provider.KeyMapper;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.provider.Query;
@@ -862,11 +862,11 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
         if (event instanceof DataChangeEvent.DataRefreshEvent) {
             T updatedItem = ((DataChangeEvent.DataRefreshEvent<T>) event)
                     .getItem();
-            IdentityProvider<T> identityProvider = getIdentityProvider();
-            Object updatedItemId = identityProvider.apply(updatedItem);
+            IdentifierProvider<T> identifierProvider = getIdentifierProvider();
+            Object updatedItemId = identifierProvider.apply(updatedItem);
             getItems()
                     .filter(vaadinItem -> updatedItemId.equals(
-                            identityProvider.apply(vaadinItem.getItem())))
+                            identifierProvider.apply(vaadinItem.getItem())))
                     .findAny().ifPresent(this::updateItem);
         } else {
             reset();
@@ -943,19 +943,19 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T> implements
     }
 
     @SuppressWarnings("unchecked")
-    private IdentityProvider<T> getIdentityProvider() {
-        IdentityProvider<T> identityProviderObject =
-                (IdentityProvider<T>) ComponentUtil.getData(this,
-                        IdentityProvider.class);
-        if (identityProviderObject == null) {
+    private IdentifierProvider<T> getIdentifierProvider() {
+        IdentifierProvider<T> identifierProviderObject =
+                (IdentifierProvider<T>) ComponentUtil.getData(this,
+                        IdentifierProvider.class);
+        if (identifierProviderObject == null) {
             DataProvider<T, ?> dataProvider = getDataProvider();
             if (dataProvider != null) {
                 return dataProvider::getId;
             } else {
-                return IdentityProvider.identity();
+                return IdentifierProvider.identity();
             }
         } else {
-            return identityProviderObject;
+            return identifierProviderObject;
         }
     }
 }
