@@ -1,14 +1,15 @@
 package com.vaadin.flow.component.select.dx;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.select.SelectView;
 import com.vaadin.flow.component.select.data.CountryData;
+import com.vaadin.flow.component.select.data.SelectListDataView;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.demo.DemoView;
+import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.router.Route;
 
 import java.util.List;
@@ -16,44 +17,77 @@ import java.util.List;
 @Route("dx-test1-task1")
 public class Task1 extends DemoView {
 
+    private Select<SelectView.Country> select;
+
+    private TextField byNameTextField;
+
+    private TextField byContinentTextField;
+
+    private final SerializablePredicate<SelectView.Country> byNameFilter =
+            c -> c.getName().toLowerCase()
+                    .contains(byNameTextField.getValue().toLowerCase());
+
+    private final SerializablePredicate<SelectView.Country> byContinentFilter =
+            c -> c.getContinent().toLowerCase()
+                    .contains(byContinentTextField.getValue().toLowerCase());
+
     @Override
     protected void initView() {
-        // Show the provided list of data in the Select component
         List<SelectView.Country> countries = getCountries();
 
-        Select<SelectView.Country> select = new Select<>();
+        select = new Select<>();
         select.setLabel("Country");
-        select.setTextRenderer(SelectView.Country::getName);
+        select.setTextRenderer(country -> String.join(", ",
+                country.getName(),
+                country.getCapital(),
+                country.getContinent()));
 
-        /* TODO: Add data binding code here */
+        /* TODO: Bind 'countries' to a select component and obtain the Data
+            View object */
 
-        // Add a label that shows the number of items in the Select component
-        Label size = new Label("Total size: " /* TODO: Add data size code here */);
+        // TODO: Use 'selectFirstCountry' method to select the first item
 
-        // Make the text field value change event filter the items in the Select component
-
-        TextField filter = new TextField("Filter",
+        byNameTextField = new TextField("Filter By Name",
                 event -> {
-                    /* TODO: Add data filtering code here */
+                    /*
+                    *  TODO: Add countries filtering by name
+                    *  TIP: Use 'applyFilter'
+                    */
+                });
+        byContinentTextField = new TextField("Filter By Continent",
+                event -> {
+                    /*
+                     *  TODO: Add countries filtering by continent
+                     *  TIP: Use 'applyFilter'
+                     */
                 });
 
-        Checkbox sortByContinent = new Checkbox("Sort By Continent",
+        Checkbox sortByCapital = new Checkbox("Sort By Capital",
                 event -> {
-                    /* TODO: Add data sorting code here */
+                    /* TODO: Add countries sorting by capital ascending
+                        if this 'sortByCapital' checkbox is ticket, clear
+                        sorting otherwise */
+
+                    // TODO: Use 'selectFirstCountry' method to select the first item
                 });
-
-        // Make the number of items label update when the data in the Select component
-        // changes due to filtering
-
-        /* TODO: Add code here */
 
         VerticalLayout verticalLayout = new VerticalLayout();
         verticalLayout.setDefaultHorizontalComponentAlignment(
                 FlexComponent.Alignment.START);
 
-        verticalLayout.add(select, filter, sortByContinent, size);
+        verticalLayout.add(select, byNameTextField, byContinentTextField,
+                sortByCapital);
 
         addCard("Task1", verticalLayout);
+    }
+
+    private void selectFirstCountry(SelectListDataView<SelectView.Country> dataView) {
+        // TODO: select the first country in the list
+    }
+
+    private void applyFilter(SelectListDataView<SelectView.Country> dataView) {
+        // TODO: apply the filters and select the first item in the list
+        // TIP: Use byNameFilter and byContinentFilter
     }
 
     private List<SelectView.Country> getCountries() {

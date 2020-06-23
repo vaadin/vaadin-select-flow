@@ -37,6 +37,9 @@ public class SelectView extends DemoView {
         private String continent;
         private String capital;
 
+        public Country() {
+        }
+
         public Country(String name, String continent, String capital) {
             this.name = name;
             this.continent = continent;
