@@ -12,6 +12,7 @@ import com.vaadin.flow.demo.DemoView;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.router.Route;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Route("dx-test1-task1")
@@ -92,6 +93,6 @@ public class Task1 extends DemoView {
 
     private List<SelectView.Country> getCountries() {
         CountryData countryData = new CountryData();
-        return countryData.getCountries();
+        return new ArrayList<>(countryData.getCountries());
     }
 }

@@ -25,8 +25,9 @@ public class Task2 extends DemoView {
     private Button previous;
     private Button delete;
     private Button save;
+    private Button update;
     private SelectView.Country currentCountry;
-    private Span data;
+    private Span data = new Span();
 
     private Select<SelectView.Country> select;
 
@@ -74,7 +75,13 @@ public class Task2 extends DemoView {
             SelectView.Country newCountry = new SelectView.Country();
             binder.writeBeanIfValid(newCountry);
 
-            /* TODO: Update or create a new country based on country form
+            /* TODO: Create a new country based on country form
+                values, then select it */
+        });
+
+        update = new Button("Update", event -> {
+            binder.writeBeanIfValid(currentCountry);
+            /* TODO: Update current country based on country form
                 values, then select it */
         });
 
@@ -119,7 +126,7 @@ public class Task2 extends DemoView {
         FormLayout formLayout = new FormLayout(countryName, countryCapital,
                 countryContinent);
         HorizontalLayout actions = new HorizontalLayout();
-        actions.add(delete, save);
+        actions.add(delete, save, update);
 
         return new VerticalLayout(layout, formLayout, actions);
     }
