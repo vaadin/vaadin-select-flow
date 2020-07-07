@@ -35,6 +35,7 @@ public class SelectView extends DemoView {
         valueChanged();
         disabledItem();
         helperText();
+        helperTextAbove();
         configurationForReqiredDemo();// Validation
         formFieldDemo();
         separatorDemo();// Presentation
@@ -104,7 +105,6 @@ public class SelectView extends DemoView {
               "Bird", "Other");
         pet.setLabel("Pets");
         pet.setHelperComponent(new Span("Your favorite pet"));
-        pet.getElement().getThemeList().set("helper-above-field", true);
 
         add(degree, pet);
         // end-source-example
@@ -113,6 +113,31 @@ public class SelectView extends DemoView {
         HorizontalLayout layout = new HorizontalLayout(degree, pet);
         layout.getStyle().set("flex-wrap", "wrap");
         addCard("Helper text and component", layout);
+    }
+
+    private void helperTextAbove () {
+        // begin-source-example
+        // source-example-heading: Helper text and component above the field
+        Select<String> degree = new Select<>("Baccalaureate", "Licence",
+              "Master", "Doctorate");
+        degree.setLabel("Academic degree");
+        degree.setHelperText(
+              "Please, select only the highest accomplished degree");
+        degree.getElement().getThemeList().set("helper-above-field", true);
+
+        Select<String> pet = new Select<>("Cat", "Dog", "Rabbit", "Fish",
+              "Bird", "Other");
+        pet.setLabel("Pets");
+        pet.setHelperComponent(new Span("Your favorite pet"));
+        pet.getElement().getThemeList().set("helper-above-field", true);
+
+        add(degree, pet);
+        // end-source-example
+
+        degree.getStyle().set("margin-right", "5px");
+        HorizontalLayout layout = new HorizontalLayout(degree, pet);
+        layout.getStyle().set("flex-wrap", "wrap");
+        addCard("Helper text and component above the field", layout);
     }
 
     private List<Department> getDepartments() {
