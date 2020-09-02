@@ -13,7 +13,9 @@ vaadin-select-flow-integration-tests/error-screenshots/
 .vscode/*
 
 # The following files are generated/updated by flow-maven-plugin
-package.json
-package-lock.json
-webpack.config.js
+package*.json
+pnpm-lock.yaml
+webpack.*.js
+tsconfig.json
+types.d.ts
 node_modules/
