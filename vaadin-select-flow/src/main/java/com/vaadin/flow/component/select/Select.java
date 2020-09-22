@@ -116,7 +116,7 @@ public class Select<T> extends GeneratedVaadinSelect<Select<T>, T>
      */
     public Select() {
         super(null, null, String.class, Select::presentationToModel,
-                Select::modelToPresentation);
+                Select::modelToPresentation, true);
 
         getElement().setProperty("invalid", false);
         getElement().setProperty("opened", false);

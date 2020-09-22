@@ -47,7 +47,8 @@ public class SelectTest {
             extends GeneratedVaadinSelect<TestSelect, String> {
 
         TestSelect() {
-            super("", null, String.class, value -> value, value -> value);
+            super("", null, String.class, (select, value) -> value,
+                    (select, value) -> value, true);
         }
     }
 
