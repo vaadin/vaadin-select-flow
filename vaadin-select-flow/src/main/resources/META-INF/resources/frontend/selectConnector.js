@@ -23,7 +23,7 @@
 
             select.renderer = tryCatchWrapper(function (root) {
                 const listBox = _findListBoxElement();
-                listBox.setAttribute(select.getAttribute("theme");
+                listBox.setAttribute(select.getAttribute("theme"));
                 if (listBox) {
                     if (root.firstChild) {
                         root.removeChild(root.firstChild);
