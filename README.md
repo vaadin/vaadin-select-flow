@@ -1,3 +1,8 @@
+⚠️ **This repository is deprecated**
+- Sources for this flow component can be found at https://github.com/vaadin/vaadin-flow-component
+- Tickets has been moved to the web component repository https://github.com/vaadin/vaadin-select/issues
+
+
 # Select Component for Vaadin Flow
 
 Vaadin Select for Flow is the Java integration for [`<vaadin-select>`](https://github.com/vaadin/vaadin-select) web component.
